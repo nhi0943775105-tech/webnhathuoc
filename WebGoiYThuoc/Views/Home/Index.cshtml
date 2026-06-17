@@ -1,0 +1,572 @@
+﻿@model IEnumerable<WebGoiYThuoc.Models.TrieuChung>
+@{
+    ViewData["Title"] = "Trang Chủ - MedSuggest";
+
+    // Đọc danh sách bệnh và thuốc thực tế đổ động từ database SQL Server qua ViewBag do HomeController truyền sang
+    var databaseBenhs = ViewBag.Diseases as List<WebGoiYThuoc.Models.Benh> ?? new List<WebGoiYThuoc.Models.Benh>();
+    var databaseThuocs = ViewBag.Thuocs as List<WebGoiYThuoc.Models.Thuoc> ?? new List<WebGoiYThuoc.Models.Thuoc>();
+}
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+<style>
+    /* TOÀN BỘ HỆ THỐNG TOKENS STYLE CHUYỂN ĐỔI TỪ FRONT-END FIGMA GỐC */
+    .figma-hero-section {
+        background-color: #1e40af; /* bg-blue-800 chuẩn màu Figma */
+        color: #ffffff;
+        padding: 64px 16px;
+        text-align: center;
+        border-radius: 16px;
+        margin: 24px 16px 0 16px;
+        position: relative;
+        overflow: hidden;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .figma-hero-title {
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        margin-bottom: 32px;
+    }
+
+    .figma-search-wrapper {
+        position: relative;
+        max-width: 672px; /* max-w-2xl */
+        margin: 0 auto 24px auto;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .figma-search-input {
+        width: 100%;
+        padding: 16px 140px 16px 48px;
+        background-color: #ffffff;
+        color: #0f172a;
+        border: none;
+        font-size: 16px;
+        outline: none;
+    }
+
+    .figma-search-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+
+    .figma-btn-search {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: #10b981; /* bg-emerald-500 hành động */
+        color: #ffffff;
+        font-weight: 600;
+        padding: 8px 24px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .figma-btn-search:hover {
+            background-color: #059669;
+        }
+
+    .figma-survey-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #ffffff;
+        padding: 10px 20px;
+        border-radius: 9999px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background-color 0.2s;
+    }
+
+        .figma-survey-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+    .figma-tag-btn {
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        padding: 6px 14px;
+        border-radius: 9999px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .figma-tag-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+    /* Bố cục lưới phân chia 2 cột chuẩn tỉ lệ Home.tsx */
+    .figma-main-container {
+        max-width: 1280px; /* max-w-7xl */
+        margin: 32px auto 0 auto;
+        padding: 0 16px;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .figma-tab-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        font-size: 14px;
+        font-weight: 600;
+        border: none;
+        background: transparent;
+        color: #64748b;
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+    }
+
+        .figma-tab-btn.active-disease {
+            color: #1e3a8a;
+            border-bottom-color: #1e3a8a;
+        }
+
+        .figma-tab-btn.active-medicine {
+            color: #10b981;
+            border-bottom-color: #10b981;
+        }
+
+    /* Định hình khung Thẻ Card chuẩn hệ thống DiseaseCard & MedicineCard */
+    .figma-card-layout {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        transition: box-shadow 0.2s;
+    }
+
+        .figma-card-layout:hover {
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+    .badge-symptom-item {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        background-color: #f1f5f9;
+        color: #334155;
+        margin-right: 6px;
+        margin-bottom: 6px;
+    }
+
+    /* ĐÃ FIX @@KEYFRAMES ĐỂ KHÔNG BÁO LỖI RAZOR CONTEXT C# */
+    @@keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<section class="figma-hero-section shadow-sm">
+    <div style="position: relative; z-index: 10;">
+        <h1 class="figma-hero-title">Bạn đang cảm thấy thế nào?</h1>
+
+        <div class="figma-search-wrapper">
+            <span class="material-symbols-outlined figma-search-icon">search</span>
+            <input type="text" id="figmaMainInput" class="figma-search-input" placeholder="Nhập các triệu chứng của bạn (ví dụ: sốt, đau đầu, ho)..." />
+            <button type="button" onclick="triggerSearchAction()" class="figma-btn-search">Tìm kiếm</button>
+        </div>
+
+        <div class="mb-6 d-flex justify-content-center">
+            <a href="/Home/Survey" class="figma-survey-link">
+                <span class="material-symbols-outlined" style="font-size:18px;">description</span>
+                Điền phiếu khảo sát thông tin & triệu chứng chi tiết
+            </a>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
+            <span class="text-blue-200 text-sm py-1.5 mr-2">Phổ biến:</span>
+            <button type="button" onclick="quickTagSearch('Sốt')" class="figma-tag-btn">Sốt</button>
+            <button type="button" onclick="quickTagSearch('Đau đầu')" class="figma-tag-btn">Đau đầu</button>
+            <button type="button" onclick="quickTagSearch('Mệt mỏi')" class="figma-tag-btn">Mệt mỏi</button>
+            <button type="button" onclick="quickTagSearch('Ho khan')" class="figma-tag-btn">Ho khan</button>
+            <button type="button" onclick="quickTagSearch('Đau họng')" class="figma-tag-btn">Đau họng</button>
+        </div>
+    </div>
+</section>
+
+<div class="figma-main-container pb-5">
+    <div class="row g-4">
+
+        <div class="col-lg-9">
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm" style="border: 1px solid #e2e8f0; border-radius: 12px;">
+
+                <div class="border-b border-slate-200 mb-4 d-flex gap-2" style="border-bottom: 1px solid #e2e8f0;">
+                    <button id="tabDiseaseTrigger" onclick="switchFigmaTab('diseases')" class="figma-tab-btn active-disease">
+                        <span class="material-symbols-outlined" style="font-size:18px; vertical-align:middle;">stethoscope</span> Gợi ý Bệnh
+                    </button>
+                    <button id="tabMedicineTrigger" onclick="switchFigmaTab('medicines')" class="figma-tab-btn">
+                        <span class="material-symbols-outlined" style="font-size:18px; vertical-align:middle;">pill</span> Gợi ý Thuốc
+                    </button>
+                </div>
+
+                <div id="aiSuggestionCard" class="d-none mb-4 p-4 rounded-xl shadow-sm" style="background: linear-gradient(145deg, #f0fdf4 0%, #ffffff 100%); border: 1px solid #10b981; position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(16,185,129,0.1) 0%, rgba(255,255,255,0) 70%);"></div>
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="material-symbols-outlined text-emerald-600" style="animation: pulse 1.5s infinite;">auto_awesome</span>
+                        <h3 class="font-bold text-emerald-800 m-0" style="font-size: 16px;">AI Trợ lý Y tế MedSuggest</h3>
+                    </div>
+
+                    <div id="aiLoading" class="text-sm text-emerald-600 italic d-flex align-items-center gap-2">
+                        <span class="material-symbols-outlined" style="font-size: 16px; animation: spin 2s linear infinite;">hourglass_empty</span> Đang phân tích và tải lời khuyên từ Google Gemini...
+                    </div>
+
+                    <div id="aiContent" class="text-sm text-slate-700 d-none" style="line-height: 1.6; font-size: 14.5px;"></div>
+                </div>
+
+                <div id="panelDiseaseContainer">
+                    <div class="mb-4 d-flex align-items-center justify-content-between">
+                        <h2 class="font-bold text-slate-800 m-0" style="font-size: 18px;">Bệnh lý có thể gặp phải</h2>
+                        <span class="text-sm text-slate-500 font-semibold" id="countDiseaseLabel">@databaseBenhs.Count kết quả</span>
+                    </div>
+
+                    <div class="row grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        @foreach (var benh in databaseBenhs)
+                        {
+                            <div class="col-md-6 mb-4 disease-search-card" data-name="@benh.TenBenh.ToLower()" data-symptoms="@(benh.TrieuChungs != null ? string.Join(",", benh.TrieuChungs.Select(t => t.TenTrieuChung.ToLower())) : "")">
+                                <div class="figma-card-layout">
+                                    <h3 class="text-blue-900 font-bold text-lg mb-2">@benh.TenBenh</h3>
+                                    <p class="text-slate-600 text-sm mb-4" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:40px;">@benh.MoTaBenh</p>
+
+                                    <div class="mb-4 flex-grow">
+                                        <p class="text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Triệu chứng liên quan</p>
+                                        <div class="flex flex-wrap gap-1.5">
+                                            @if (benh.TrieuChungs != null && benh.TrieuChungs.Any())
+                                            {
+                                                foreach (var tc in benh.TrieuChungs)
+                                                {
+                                                    <span class="badge-symptom-item">@tc.TenTrieuChung</span>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div id="panelMedicineContainer" class="d-none">
+                    <div class="mb-4 d-flex align-items-center justify-content-between">
+                        <h2 class="font-bold text-slate-800 m-0" style="font-size: 18px;">Các loại thuốc tham khảo</h2>
+                        <span class="text-sm text-slate-500 font-semibold" id="countMedicineLabel">@databaseThuocs.Count kết quả</span>
+                    </div>
+
+                    <div class="row grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        @foreach (var thuoc in databaseThuocs)
+                        {
+                            var thuocSymptomList = new List<string>();
+                            if (thuoc.Benhs != null)
+                            {
+                                foreach (var b in thuoc.Benhs)
+                                {
+                                    if (b.TrieuChungs != null)
+                                    {
+                                        thuocSymptomList.AddRange(b.TrieuChungs.Select(t => t.TenTrieuChung.ToLower()));
+                                    }
+                                }
+                            }
+                            string attributeSymptoms = string.Join(",", thuocSymptomList.Distinct());
+
+                            <div class="col-md-6 mb-4 medicine-search-card" data-name="@thuoc.TenThuoc.ToLower()" data-symptoms="@attributeSymptoms">
+                                <div class="figma-card-layout">
+                                    <div class="p-0 flex-grow">
+                                        <div class="flex items-start gap-3 mb-3 d-flex">
+                                            <div class="bg-emerald-100 p-2 rounded-lg text-emerald-600 flex-shrink-0" style="background-color: #d1fae5; color: #059669; border-radius: 8px; padding: 6px 10px;">
+                                                <span class="material-symbols-outlined" style="vertical-align: middle;">pill</span>
+                                            </div>
+                                            <div style="margin-left:10px;">
+                                                <h3 class="text-slate-800 font-bold text-lg leading-tight m-0" style="margin-top:4px !important;">@thuoc.TenThuoc</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="pt-2 mt-2 border-t border-slate-100" style="border-top: 1px solid #f1f5f9;">
+                                        <div class="d-flex align-items-start gap-1 text-slate-600 text-sm">
+                                            <span class="material-symbols-outlined text-slate-400" style="font-size:18px; margin-top:2px;">assignment</span>
+                                            <div style="margin-left:4px;" class="text-sm">
+                                                <span class="font-semibold text-slate-700">Chỉ định công dụng:</span> @thuoc.CongDung
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-3">
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden sticky" style="position: sticky; top: 88px; border: 1px solid #e2e8f0; border-radius: 12px;">
+                <div class="p-4 bg-slate-50 d-flex align-items-center gap-2" style="background-color: #f8fafc; border-bottom:1px solid #f1f5f9;">
+                    <span class="material-symbols-outlined text-blue-800">history</span>
+                    <h5 class="font-bold text-slate-800 m-0" style="font-size: 15px;">Lịch sử tìm kiếm gần đây</h5>
+                </div>
+
+                <div class="p-2" id="figmaHistoryListArea">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // =========================================================================
+    // 1. HÀM GỌI API GEMINI ĐÃ ĐƯỢC CHUẨN HÓA SỬA LỖI 400 VÀ TREO LOADING
+    // =========================================================================
+    async function fetchAIAdvice(query) {
+        const aiCard = document.getElementById('aiSuggestionCard');
+        const aiLoading = document.getElementById('aiLoading');
+        const aiContent = document.getElementById('aiContent');
+
+        if (!query || query.trim() === "") {
+            aiCard.classList.add('d-none');
+            return;
+        }
+
+        // Hiện khung và reset trạng thái loading lấp lánh
+        aiCard.classList.remove('d-none');
+        aiLoading.classList.remove('d-none');
+        aiLoading.innerHTML = `<span class="material-symbols-outlined" style="font-size: 16px; animation: spin 2s linear infinite;">hourglass_empty</span> Đang phân tích và tải lời khuyên từ Google Gemini...`;
+        aiContent.classList.add('d-none');
+
+        // Khóa API chính thức từ Google AI Studio của bạn (Đầu AQ cập nhật)
+        const API_KEY = "AIzaSyDCN_46XBPr_RR3lzNPXq-0mV_ian77BBI";
+
+        // Cấu hình Prompt cưỡng chế AI đóng vai dược sĩ lâm sàng chuyên nghiệp
+        const promptText = `Bạn là một Dược sĩ tư vấn y tế trực tuyến giàu kinh nghiệm. Người bệnh đang có các triệu chứng sau: [${query}]. Hãy đưa ra một đánh giá sơ bộ ngắn gọn, lời khuyên y tế hữu ích và chế độ chăm sóc sức khỏe tại nhà phù hợp. Yêu cầu: Viết dưới 130 từ, sử dụng định dạng Markdown rõ ràng, thêm các emoji y tế (🩺, 💊, ⚠️) sinh động. Cuối cùng hãy nhắc nhở họ kéo xuống xem danh sách thuốc tham khảo.`;
+
+        // SỬ DỤNG MODEL CHUẨN ĐỊNH TUYẾN 1.5-FLASH ĐỂ TRÁNH LỖI 404 CỦA CÁC BẢN LITE/PRO BETA
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`;
+
+        // ĐÓNG GÓI CHUẨN REQUEST BODY PHÂN TẦNG TUÂN THỦ NGHIÊM NGẶT QUY ĐỊNH GOOGLE TRÁNH LỖI 400 BAD REQUEST
+        const requestBody = {
+            contents: [
+                {
+                    parts: [
+                        {
+                            text: promptText
+                        }
+                    ]
+                }
+            ]
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Google trả về mã lỗi HTTP: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // KIỂM TRA TẦNG NẤC AN TOÀN TRƯỚC KHI TRUY XUẤT DỮ LIỆU
+            if (data && data.candidates && data.candidates.length > 0 &&
+                data.candidates[0].content && data.candidates[0].content.parts &&
+                data.candidates[0].content.parts.length > 0) {
+
+                // Trích xuất thành công chuỗi văn bản từ Gemini
+                const aiResponseText = data.candidates[0].content.parts[0].text;
+
+                // Tắt trạng thái loading
+                aiLoading.classList.add('d-none');
+
+                // Định dạng văn bản Markdown sang thẻ HTML sinh động
+                let formattedAdvice = aiResponseText
+                    .replace(/\n/g, '<br>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong style="color: #065f46; font-weight:700;">$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+                // Hiển thị nội dung
+                aiContent.innerHTML = formattedAdvice;
+                aiContent.classList.remove('d-none');
+            } else {
+                aiLoading.innerHTML = `<span class="text-warning" style="display:flex; align-items:center; gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">shield</span> AI không thể đưa ra đánh giá cho từ khóa này. Vui lòng tham khảo ý kiến bác sĩ trực tiếp.</span>`;
+            }
+
+        } catch (error) {
+            console.error("Lỗi xử lý AI:", error);
+            aiLoading.innerHTML = `<span class="text-danger" style="display:flex; align-items:center; gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">error</span> Gặp sự cố khi kết nối với trí tuệ nhân tạo (Hạn ngạch hoặc Key hết hạn).</span>`;
+        }
+    }
+
+    // =========================================================================
+    // 2. HÀM CHUYỂN ĐỔI TAB GỢI Ý
+    // =========================================================================
+    function switchFigmaTab(target) {
+        if (target === 'diseases') {
+            document.getElementById('panelDiseaseContainer').classList.remove('d-none');
+            document.getElementById('panelMedicineContainer').classList.add('d-none');
+            document.getElementById('tabDiseaseTrigger').classList.add('active-disease');
+            document.getElementById('tabMedicineTrigger').classList.remove('active-medicine');
+        } else {
+            document.getElementById('panelDiseaseContainer').classList.add('d-none');
+            document.getElementById('panelMedicineContainer').classList.remove('d-none');
+            document.getElementById('tabDiseaseTrigger').classList.remove('active-disease');
+            document.getElementById('tabMedicineTrigger').classList.add('active-medicine');
+        }
+    }
+
+    // =========================================================================
+    // 3. HÀM LỌC TÌM KIẾM DỮ LIỆU ĐỘNG TRÊN LƯỚI
+    // =========================================================================
+    function runLiveFigmaSearch() {
+        const val = document.getElementById('figmaMainInput').value.toLowerCase().trim();
+
+        // Lọc lưới Bệnh
+        const diseaseCards = document.querySelectorAll('.disease-search-card');
+        let matchedDiseases = 0;
+        diseaseCards.forEach(card => {
+            const name = card.getAttribute('data-name') || "";
+            const symptoms = card.getAttribute('data-symptoms') || "";
+            if(name.includes(val) || symptoms.includes(val)) {
+                card.style.display = "block";
+                matchedDiseases++;
+            } else {
+                card.style.display = "none";
+            }
+        });
+        document.getElementById('countDiseaseLabel').innerText = matchedDiseases + " kết quả";
+
+        // Lọc lưới Thuốc
+        const medicineCards = document.querySelectorAll('.medicine-search-card');
+        let matchedMedicines = 0;
+        medicineCards.forEach(card => {
+            const name = card.getAttribute('data-name') || "";
+            const symptoms = card.getAttribute('data-symptoms') || "";
+            if(name.includes(val) || symptoms.includes(val)) {
+                card.style.display = "block";
+                matchedMedicines++;
+            } else {
+                card.style.display = "none";
+            }
+        });
+        document.getElementById('countMedicineLabel').innerText = matchedMedicines + " kết quả";
+    }
+
+    // =========================================================================
+    // 4. XỬ LÝ SỰ KIỆN KHI BẤM NÚT TÌM KIẾM (Hoặc Enter / Lưu Khảo Sát)
+    // =========================================================================
+    function triggerSearchAction() {
+        const inputVal = document.getElementById('figmaMainInput').value.trim();
+        if(!inputVal) return;
+
+        // 1. Lọc giao diện
+        runLiveFigmaSearch();
+
+        // 2. Kích hoạt gọi AI Gemini Trực tiếp
+        fetchAIAdvice(inputVal);
+
+        // 3. Xử lý lưu lịch sử
+        let currentHistory = JSON.parse(localStorage.getItem('med_search_history')) || [];
+        currentHistory = currentHistory.filter(h => h.query.toLowerCase() !== inputVal.toLowerCase());
+        currentHistory.unshift({ query: inputVal, timestamp: Date.now() });
+        if(currentHistory.length > 5) currentHistory.pop();
+        localStorage.setItem('med_search_history', JSON.stringify(currentHistory));
+
+        // 4. Load lại Sidebar
+        loadHistorySidebarRealtime();
+    }
+
+    // =========================================================================
+    // 5. CÁC HÀM TIỆN ÍCH (LỊCH SỬ & TAG)
+    // =========================================================================
+    function getDynamicTimeAgo(timestamp) {
+        const diffMs = Date.now() - timestamp;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMins / 60);
+
+        if (diffMins < 1) return "Vừa xong";
+        if (diffMins < 60) return diffMins + " phút trước";
+        if (diffHours < 24) return diffHours + " giờ trước";
+        return "Vài ngày trước";
+    }
+
+    function loadHistorySidebarRealtime() {
+        const area = document.getElementById('figmaHistoryListArea');
+        const currentHistory = JSON.parse(localStorage.getItem('med_search_history')) || [];
+
+        if(currentHistory.length === 0) {
+            area.innerHTML = `<div class="p-4 text-center text-sm text-slate-500 italic">Chưa có lịch sử tìm kiếm</div>`;
+            return;
+        }
+
+        area.innerHTML = currentHistory.map(h => {
+            const timeAgoText = getDynamicTimeAgo(h.timestamp);
+            return `
+                <div onclick="quickTagSearch('${h.query}')" class="p-3 hover:bg-slate-50 rounded-lg cursor-pointer transition-colors border-b border-slate-100 last:border-0" style="border-bottom: 1px solid #f1f5f9; display:block;">
+                    <div class="d-flex align-items-center gap-2 text-slate-400 mb-1" style="font-size:11px; display:flex;">
+                        <span class="material-symbols-outlined" style="font-size:12px;">calendar_today</span>
+                        <span>${timeAgoText}</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 text-sm text-slate-700 font-semibold" style="display:flex;">
+                        <span class="material-symbols-outlined" style="font-size:14px; color:#94a3b8;">search</span>
+                        <span>${h.query}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function quickTagSearch(tagText) {
+        document.getElementById('figmaMainInput').value = tagText;
+        triggerSearchAction();
+    }
+
+    // =========================================================================
+    // 6. KHỞI TẠO SỰ KIỆN KHI TẢI TRANG
+    // =========================================================================
+    document.addEventListener("DOMContentLoaded", function() {
+        loadHistorySidebarRealtime();
+        setInterval(loadHistorySidebarRealtime, 30000);
+
+        document.getElementById('figmaMainInput').addEventListener("keyup", runLiveFigmaSearch);
+
+        document.getElementById('figmaMainInput').addEventListener("keydown", function(e) {
+            if(e.key === "Enter") {
+                triggerSearchAction();
+            }
+        });
+
+        var initialQuery = "@Html.Raw(ViewBag.InitialSearchQuery)";
+        if (initialQuery && initialQuery.trim() !== "") {
+            document.getElementById('figmaMainInput').value = initialQuery;
+
+            setTimeout(function() {
+                triggerSearchAction();
+            }, 300);
+        }
+    });
+</script>
