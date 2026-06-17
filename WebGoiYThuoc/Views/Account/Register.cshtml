@@ -1,0 +1,173 @@
+﻿
+@{
+    Layout = null; // Chạy giao diện độc lập chuẩn Figma
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng ký tài khoản - MEDIC</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <style>
+        body {
+            background-color: #F8FAFC;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #1E293B;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #E2E8F0;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-bar-brand {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1e3a8a;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .auth-wrapper {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            width: 100%;
+            max-width: 480px;
+            padding: 40px;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #10b981;
+                box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+            }
+        /* Nút tạo tài khoản màu xanh lá Emerald trùng khớp file RegisterPage.tsx */
+        .btn-emerald-custom {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+            .btn-emerald-custom:hover {
+                background-color: #059669;
+                color: white;
+            }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .divider-line {
+            flex-grow: 1;
+            height: 1px;
+            background-color: #E2E8F0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="/" class="top-bar-brand">
+            <span>🌿</span> MEDIC
+        </a>
+    </div>
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold" style="color: #1e3a8a; letter-spacing: -0.5px;">Tạo tài khoản mới</h3>
+                <p class="text-muted small">Tham gia cùng chúng tôi để quản lý sức khỏe tốt hơn</p>
+            </div>
+
+            <form asp-controller="Account" asp-action="Register" method="POST">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary">Họ và tên</label>
+                    <input type="text" name="HoTen" class="form-control" placeholder="Nguyễn Văn A" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary">Địa chỉ Email</label>
+                    <input type="email" name="Email" class="form-control" placeholder="example@gmail.com" required />
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label class="form-label small fw-bold text-secondary">Giới tính</label>
+                        <select name="GioiTinh" class="form-select" required>
+                            <option value="">Chọn...</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nu">Nữ</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small fw-bold text-secondary">Ngày sinh</label>
+                        <input type="date" name="NgaySinh" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary">Mật khẩu</label>
+                    <input type="password" name="Password" class="form-control" placeholder="••••••••" required />
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-secondary">Xác nhận mật khẩu</label>
+                    <input type="password" name="ConfirmPassword" class="form-control" placeholder="••••••••" required />
+                </div>
+
+                <button type="submit" class="btn btn-emerald-custom w-100 mb-2 shadow-sm">Tạo tài khoản</button>
+            </form>
+
+            <div class="divider">
+                <div class="divider-line"></div>
+                <span class="text-muted small" style="font-size: 11px; text-transform: uppercase;">hoặc</span>
+                <div class="divider-line"></div>
+            </div>
+
+            <p class="text-center text-sm m-0" style="font-size: 14px;">
+                Đã có tài khoản?
+                <a href="/Account/Login" class="fw-bold hover:underline" style="color: #1d4ed8; text-decoration: none;">Đăng nhập</a>
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>

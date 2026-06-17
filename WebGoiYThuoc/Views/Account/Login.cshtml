@@ -1,0 +1,158 @@
+﻿    
+@{
+    Layout = null; // Chạy giao diện độc lập chuẩn Figma
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập - MEDIC</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <style>
+        body {
+            background-color: #F8FAFC; /* Màu nền xám nhẹ chuẩn Figma */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #1E293B;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Top Bar tinh giản giống thiết kế */
+        .top-bar {
+            background-color: #ffffff;
+            border-b: 1px solid #E2E8F0;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-bar-brand {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1e3a8a;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        /* Khung chứa Form ở giữa màn hình */
+        .auth-wrapper {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            width: 100%;
+            max-width: 440px;
+            padding: 40px;
+        }
+
+        .form-control {
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+            .form-control:focus {
+                border-color: #1e3a8a;
+                box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+            }
+        /* Nút đăng nhập màu xanh Navy đậm đà trùng file LoginPage.tsx */
+        .btn-navy-custom {
+            background-color: #1e3a8a;
+            color: white;
+            border: none;
+            font-weight: 600;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+            .btn-navy-custom:hover {
+                background-color: #172554;
+                color: white;
+            }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .divider-line {
+            flex-grow: 1;
+            h-px: 1px;
+            height: 1px;
+            background-color: #E2E8F0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="/" class="top-bar-brand">
+            <span>🔹</span> MEDIC
+        </a>
+    </div>
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold" style="color: #1e3a8a; letter-spacing: -0.5px;">Chào mừng trở lại</h3>
+                <p class="text-muted small">Vui lòng đăng nhập để tiếp tục sử dụng hệ thống</p>
+            </div>
+
+            <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="POST">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger p-2 small border-0 rounded-3 mb-3 d-flex align-items-center gap-2">
+                        <span>⚠️</span> <div>Vui lòng kiểm tra lại tài khoản hoặc mật khẩu.</div>
+                    </div>
+                }
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-secondary">Địa chỉ Email</label>
+                    <input type="email" name="Email" class="form-control" placeholder="ten@viethas.com" required />
+                </div>
+
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label class="form-label small fw-bold text-secondary mb-1">Mật khẩu</label>
+                    </div>
+                    <input type="password" name="Password" class="form-control" placeholder="••••••••" required />
+                </div>
+
+                <button type="submit" class="btn btn-navy-custom w-100 mb-2 shadow-sm">Đăng nhập</button>
+            </form>
+
+            <div class="divider">
+                <div class="divider-line"></div>
+                <span class="text-muted small" style="font-size: 11px; text-transform: uppercase;">hoặc</span>
+                <div class="divider-line"></div>
+            </div>
+
+            <p class="text-center text-sm m-0" style="font-size: 14px;">
+                Chưa có tài khoản?
+                <a href="/Account/Register" class="fw-bold hover:underline" style="color: #1d4ed8; text-decoration: none;">Đăng ký ngay</a>
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>
