@@ -168,5 +168,39 @@ namespace WebGoiYThuoc.Areas.Admin.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+        // ========== SỬA / XÓA THUỐC ==========
+        [HttpGet]
+        public async Task<IActionResult> GetThuoc(int id)
+        {
+            var thuoc = await _context.Thuocs.FindAsync(id);
+            if (thuoc == null) return NotFound();
+            return Json(new { tenThuoc = thuoc.TenThuoc, congDung = thuoc.CongDung });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateThuoc(int id, string TenThuoc, string CongDung)
+        {
+            var thuoc = await _context.Thuocs.FindAsync(id);
+            if (thuoc == null) return NotFound();
+
+            if (string.IsNullOrWhiteSpace(TenThuoc))
+                return BadRequest("Tên thuốc không được để trống.");
+
+            thuoc.TenThuoc = TenThuoc;
+            thuoc.CongDung = CongDung ?? "";
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteThuoc(int id)
+        {
+            var thuoc = await _context.Thuocs.FindAsync(id);
+            if (thuoc == null) return NotFound();
+
+            _context.Thuocs.Remove(thuoc);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
     }
 }
