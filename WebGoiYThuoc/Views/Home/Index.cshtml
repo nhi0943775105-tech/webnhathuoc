@@ -103,6 +103,7 @@
         max-width: 640px;
         margin: 0 auto 28px;
         transition: box-shadow 0.2s;
+        flex-wrap: wrap; /* cho responsive */
     }
 
         .search-container:focus-within {
@@ -124,6 +125,7 @@
         background: transparent;
         color: var(--text-main);
         font-family: var(--font);
+        min-width: 150px;
     }
 
         .search-input::placeholder {
@@ -136,7 +138,7 @@
         border: none;
         color: white;
         font-weight: 600;
-        padding: 12px 28px;
+        padding: 12px 20px;
         margin: 6px 6px 6px 0;
         border-radius: 50px;
         font-size: 0.95rem;
@@ -153,6 +155,31 @@
         }
 
         .btn-search:active {
+            transform: scale(0.97);
+        }
+
+    .btn-ai {
+        background: #2563eb;
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 12px 20px;
+        margin: 6px 6px 6px 0;
+        border-radius: 50px;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+    }
+
+        .btn-ai:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-ai:active {
             transform: scale(0.97);
         }
 
@@ -541,9 +568,9 @@
             border-radius: var(--radius);
         }
 
-        .btn-search {
-            width: 100%;
-            margin: 0 6px 6px 6px;
+        .btn-search, .btn-ai {
+            margin: 6px;
+            flex: 1 1 auto;
         }
     }
 </style>
@@ -558,6 +585,9 @@
             <input type="text" id="figmaMainInput" class="search-input" placeholder="Nhập triệu chứng: sốt, đau đầu, ho..." />
             <button type="button" onclick="triggerSearchAction()" class="btn-search">
                 <span class="material-symbols-outlined" style="font-size:18px;">search</span> Tìm kiếm
+            </button>
+            <button type="button" onclick="askAI()" class="btn-ai">
+                <span class="material-symbols-outlined" style="font-size:18px;">auto_awesome</span> Hỏi AI
             </button>
         </div>
 
@@ -599,7 +629,7 @@
                 </div>
                 <div id="aiLoading" class="ai-loading">
                     <span class="material-symbols-outlined" style="font-size:16px; animation: spin 2s linear infinite;">hourglass_empty</span>
-                    Đang phân tích và tải lời khuyên từ Google Gemini...
+                    Đang phân tích và tải lời khuyên từ AI...
                 </div>
                 <div id="aiContent" class="ai-content d-none"></div>
             </div>
@@ -693,84 +723,60 @@
     </div>
 </div>
 
-<!-- SCRIPTS (giữ nguyên toàn bộ logic) -->
+<!-- SCRIPTS -->
 <script>
     // =========================================================================
-    // 1. HÀM GỌI API GEMINI
+    // 1. HÀM GỌI AI (qua server để bảo mật key)
     // =========================================================================
     async function fetchAIAdvice(query) {
         const aiCard = document.getElementById('aiSuggestionCard');
         const aiLoading = document.getElementById('aiLoading');
         const aiContent = document.getElementById('aiContent');
 
-        if (!query || query.trim() === "") {
-            aiCard.classList.add('d-none');
-            return;
-        }
+        if (!query || query.trim() === "") return;
 
         aiCard.classList.remove('d-none');
         aiLoading.classList.remove('d-none');
-        aiLoading.innerHTML = `<span class="material-symbols-outlined" style="font-size: 16px; animation: spin 2s linear infinite;">hourglass_empty</span> Đang phân tích và tải lời khuyên từ Google Gemini...`;
         aiContent.classList.add('d-none');
-
-        const API_KEY = "AQ.Ab8RN6JkUJ_11CPFzQ-DoBj8sPSk6hrzwxhJXXXVoZjtidG04g";
-
-        const promptText = `Bạn là một Dược sĩ tư vấn y tế trực tuyến giàu kinh nghiệm. Người bệnh đang có các triệu chứng sau: [${query}]. Hãy đưa ra một đánh giá sơ bộ ngắn gọn, lời khuyên y tế hữu ích và chế độ chăm sóc sức khỏe tại nhà phù hợp. Yêu cầu: Viết dưới 130 từ, sử dụng định dạng Markdown rõ ràng, thêm các emoji y tế (🩺, 💊, ⚠️) sinh động. Cuối cùng hãy nhắc nhở họ kéo xuống xem danh sách thuốc tham khảo.`;
-
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`;
-
-        const requestBody = {
-            contents: [
-                {
-                    parts: [
-                        {
-                            text: promptText
-                        }
-                    ]
-                }
-            ]
-        };
+        aiLoading.innerHTML = `<span class="material-symbols-outlined" style="font-size: 16px; animation: spin 2s linear infinite;">hourglass_empty</span> Đang phân tích và tải lời khuyên từ AI...`;
 
         try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(requestBody)
-            });
-
-            if (!response.ok) {
-                throw new Error(`Google trả về mã lỗi HTTP: ${response.status}`);
-            }
-
+            const response = await fetch(`/Home/GetAIAssistantAdvice?symptoms=${encodeURIComponent(query)}`);
             const data = await response.json();
 
-            if (data && data.candidates && data.candidates.length > 0 &&
-                data.candidates[0].content && data.candidates[0].content.parts &&
-                data.candidates[0].content.parts.length > 0) {
-
-                const aiResponseText = data.candidates[0].content.parts[0].text;
-
-                aiLoading.classList.add('d-none');
-
-                let formattedAdvice = aiResponseText
+            aiLoading.classList.add('d-none');
+            if (data.advice) {
+                let formatted = data.advice
                     .replace(/\n/g, '<br>')
-                    .replace(/\*\*(.*?)\*\*/g, '<strong style="color: #065f46; font-weight:700;">$1</strong>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#065f46;">$1</strong>')
                     .replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-                aiContent.innerHTML = formattedAdvice;
+                aiContent.innerHTML = formatted;
                 aiContent.classList.remove('d-none');
             } else {
-                aiLoading.innerHTML = `<span class="text-warning" style="display:flex; align-items:center; gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">shield</span> AI không thể đưa ra đánh giá cho từ khóa này. Vui lòng tham khảo ý kiến bác sĩ trực tiếp.</span>`;
+                aiContent.innerHTML = '⚠️ AI không có phản hồi. Hãy thử lại sau.';
+                aiContent.classList.remove('d-none');
             }
-
-        } catch (error) {
-            console.error("Lỗi xử lý AI:", error);
-            aiLoading.innerHTML = `<span class="text-danger" style="display:flex; align-items:center; gap:4px;"><span class="material-symbols-outlined" style="font-size:16px;">error</span> Gặp sự cố khi kết nối với trí tuệ nhân tạo (Hạn ngạch hoặc Key hết hạn).</span>`;
+        } catch (err) {
+            aiLoading.classList.add('d-none');
+            aiContent.innerHTML = '❌ Lỗi kết nối đến máy chủ AI. Vui lòng kiểm tra lại.';
+            aiContent.classList.remove('d-none');
         }
     }
 
     // =========================================================================
-    // 2. CHUYỂN TAB
+    // 2. KÍCH HOẠT AI KHI BẤM NÚT
+    // =========================================================================
+    function askAI() {
+        const inputVal = document.getElementById('figmaMainInput').value.trim();
+        if (!inputVal) {
+            alert('Vui lòng nhập triệu chứng trước khi hỏi AI.');
+            return;
+        }
+        fetchAIAdvice(inputVal);
+    }
+
+    // =========================================================================
+    // 3. CHUYỂN TAB
     // =========================================================================
     function switchFigmaTab(target) {
         if (target === 'diseases') {
@@ -787,7 +793,7 @@
     }
 
     // =========================================================================
-    // 3. TÌM KIẾM TRỰC TIẾP
+    // 4. TÌM KIẾM (CHỈ LỌC, KHÔNG GỌI AI)
     // =========================================================================
     function runLiveFigmaSearch() {
         const val = document.getElementById('figmaMainInput').value.toLowerCase().trim();
@@ -822,14 +828,14 @@
     }
 
     // =========================================================================
-    // 4. XỬ LÝ TÌM KIẾM CHÍNH
+    // 5. XỬ LÝ TÌM KIẾM CHÍNH (CHỈ LỌC + LƯU LỊCH SỬ)
     // =========================================================================
     function triggerSearchAction() {
         const inputVal = document.getElementById('figmaMainInput').value.trim();
         if(!inputVal) return;
 
         runLiveFigmaSearch();
-        fetchAIAdvice(inputVal);
+        // KHÔNG gọi AI ở đây nữa
 
         let currentHistory = JSON.parse(localStorage.getItem('med_search_history')) || [];
         currentHistory = currentHistory.filter(h => h.query.toLowerCase() !== inputVal.toLowerCase());
@@ -841,7 +847,7 @@
     }
 
     // =========================================================================
-    // 5. LỊCH SỬ
+    // 6. LỊCH SỬ
     // =========================================================================
     function getDynamicTimeAgo(timestamp) {
         const diffMs = Date.now() - timestamp;
@@ -882,11 +888,11 @@
 
     function quickTagSearch(tagText) {
         document.getElementById('figmaMainInput').value = tagText;
-        triggerSearchAction();
+        triggerSearchAction(); // chỉ lọc, không AI
     }
 
     // =========================================================================
-    // 6. KHỞI TẠO
+    // 7. KHỞI TẠO
     // =========================================================================
     document.addEventListener("DOMContentLoaded", function() {
         loadHistorySidebarRealtime();
@@ -895,7 +901,7 @@
         document.getElementById('figmaMainInput').addEventListener("keyup", runLiveFigmaSearch);
         document.getElementById('figmaMainInput').addEventListener("keydown", function(e) {
             if(e.key === "Enter") {
-                triggerSearchAction();
+                triggerSearchAction(); // Enter cũng chỉ lọc
             }
         });
 
@@ -903,7 +909,7 @@
         if (initialQuery && initialQuery.trim() !== "") {
             document.getElementById('figmaMainInput').value = initialQuery;
             setTimeout(function() {
-                triggerSearchAction();
+                triggerSearchAction(); // load trang có query từ survey -> chỉ lọc
             }, 300);
         }
     });
