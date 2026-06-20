@@ -1,6 +1,5 @@
-﻿
-@{
-    Layout = null; // Chạy giao diện độc lập chuẩn Figma
+﻿@{
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -8,41 +7,85 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đăng ký tài khoản - MEDIC</title>
+    <title>Đăng ký tài khoản - MedSuggest</title>
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
     <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 30%, #ffffff 80%);
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            --radius: 20px;
+            --font: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
         body {
-            background-color: #F8FAFC;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #1E293B;
+            font-family: var(--font);
+            background: var(--bg-gradient);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            margin: 0;
         }
 
-        .top-bar {
-            background-color: #ffffff;
-            border-bottom: 1px solid #E2E8F0;
+        /* Header */
+        .auth-header {
+            background: white;
+            border-bottom: 1px solid var(--border);
             padding: 16px 24px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
 
-        .top-bar-brand {
-            font-size: 20px;
-            font-weight: 800;
-            color: #1e3a8a;
-            letter-spacing: -0.5px;
+        .brand-link {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 8px;
+            letter-spacing: -0.3px;
         }
 
+            .brand-link:hover {
+                color: var(--primary-dark);
+            }
+
+        .back-home {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #475569;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+
+            .back-home:hover {
+                color: var(--primary);
+            }
+
+        /* Card */
         .auth-wrapper {
-            flex-grow: 1;
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -50,87 +93,179 @@
         }
 
         .auth-card {
-            background: #ffffff;
-            border: 1px solid #E2E8F0;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--card-shadow);
             width: 100%;
-            max-width: 480px;
-            padding: 40px;
+            max-width: 500px;
+            padding: 40px 36px;
+            transition: transform 0.2s;
+        }
+
+            .auth-card:hover {
+                transform: translateY(-2px);
+            }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .card-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        /* Form */
+        .form-label {
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .form-control, .form-select {
-            border: 1px solid #CBD5E1;
-            border-radius: 8px;
-            padding: 10px 14px;
-            font-size: 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
             transition: all 0.2s;
+            font-family: var(--font);
+            background-color: #f8fafc;
         }
 
             .form-control:focus, .form-select:focus {
-                border-color: #10b981;
-                box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+                border-color: var(--secondary);
+                box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+                background-color: white;
             }
-        /* Nút tạo tài khoản màu xanh lá Emerald trùng khớp file RegisterPage.tsx */
-        .btn-emerald-custom {
-            background-color: #10b981;
-            color: white;
+
+        .btn-register {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             border: none;
+            color: white;
             font-weight: 600;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: background 0.2s;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: background 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
         }
 
-            .btn-emerald-custom:hover {
-                background-color: #059669;
-                color: white;
+            .btn-register:hover {
+                background: linear-gradient(135deg, #059669 0%, #047857 100%);
+                box-shadow: 0 6px 14px rgba(16, 185, 129, 0.35);
+            }
+
+            .btn-register:active {
+                transform: scale(0.98);
             }
 
         .divider {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin: 24px 0;
+            margin: 28px 0;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
         }
 
         .divider-line {
             flex-grow: 1;
             height: 1px;
-            background-color: #E2E8F0;
+            background: #e2e8f0;
+        }
+
+        .login-link {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #475569;
+        }
+
+            .login-link a {
+                font-weight: 700;
+                color: var(--primary);
+                text-decoration: none;
+            }
+
+                .login-link a:hover {
+                    color: var(--primary-dark);
+                    text-decoration: underline;
+                }
+
+        /* Responsive */
+        @@media (max-width: 576px) {
+            .auth-card {
+                padding: 28px 20px;
+            }
+
+            .row.mb-3 .col-6 {
+                width: 100%;
+                flex: 0 0 100%;
+                max-width: 100%;
+                margin-bottom: 12px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <a href="/" class="top-bar-brand">
-            <span>🌿</span> MEDIC
+    <div class="auth-header">
+        <a href="/" class="brand-link">
+            <span class="material-symbols-outlined" style="font-size:28px;">medical_services</span>
+            MedSuggest
+        </a>
+        <a href="/" class="back-home">
+            <span class="material-symbols-outlined" style="font-size:18px;">arrow_back</span> Trang chủ
         </a>
     </div>
 
     <div class="auth-wrapper">
         <div class="auth-card">
-            <div class="text-center mb-4">
-                <h3 class="fw-bold" style="color: #1e3a8a; letter-spacing: -0.5px;">Tạo tài khoản mới</h3>
-                <p class="text-muted small">Tham gia cùng chúng tôi để quản lý sức khỏe tốt hơn</p>
+            <div class="card-title">
+                <span class="material-symbols-outlined" style="font-size:32px; color:#2563eb;">person_add</span>
+                Tạo tài khoản
             </div>
+            <p class="card-subtitle">Tham gia MedSuggest để quản lý sức khỏe thông minh hơn</p>
 
             <form asp-controller="Account" asp-action="Register" method="POST">
                 <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Họ và tên</label>
+                    <label class="form-label">
+                        <span class="material-symbols-outlined" style="font-size:16px;">badge</span> Họ và tên
+                    </label>
                     <input type="text" name="HoTen" class="form-control" placeholder="Nguyễn Văn A" required />
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Địa chỉ Email</label>
+                    <label class="form-label">
+                        <span class="material-symbols-outlined" style="font-size:16px;">mail</span> Địa chỉ Email
+                    </label>
                     <input type="email" name="Email" class="form-control" placeholder="example@gmail.com" required />
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-6">
-                        <label class="form-label small fw-bold text-secondary">Giới tính</label>
+                        <label class="form-label">
+                            <span class="material-symbols-outlined" style="font-size:16px;">wc</span> Giới tính
+                        </label>
                         <select name="GioiTinh" class="form-select" required>
                             <option value="">Chọn...</option>
                             <option value="Nam">Nam</option>
@@ -138,36 +273,45 @@
                         </select>
                     </div>
                     <div class="col-6">
-                        <label class="form-label small fw-bold text-secondary">Ngày sinh</label>
+                        <label class="form-label">
+                            <span class="material-symbols-outlined" style="font-size:16px;">calendar_today</span> Ngày sinh
+                        </label>
                         <input type="date" name="NgaySinh" class="form-control" required />
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label small fw-bold text-secondary">Mật khẩu</label>
+                    <label class="form-label">
+                        <span class="material-symbols-outlined" style="font-size:16px;">lock</span> Mật khẩu
+                    </label>
                     <input type="password" name="Password" class="form-control" placeholder="••••••••" required />
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label small fw-bold text-secondary">Xác nhận mật khẩu</label>
+                    <label class="form-label">
+                        <span class="material-symbols-outlined" style="font-size:16px;">lock_reset</span> Xác nhận mật khẩu
+                    </label>
                     <input type="password" name="ConfirmPassword" class="form-control" placeholder="••••••••" required />
                 </div>
 
-                <button type="submit" class="btn btn-emerald-custom w-100 mb-2 shadow-sm">Tạo tài khoản</button>
+                <button type="submit" class="btn btn-register w-100">
+                    <span class="material-symbols-outlined" style="font-size:20px;">how_to_reg</span> Tạo tài khoản
+                </button>
             </form>
 
             <div class="divider">
                 <div class="divider-line"></div>
-                <span class="text-muted small" style="font-size: 11px; text-transform: uppercase;">hoặc</span>
+                <span>hoặc</span>
                 <div class="divider-line"></div>
             </div>
 
-            <p class="text-center text-sm m-0" style="font-size: 14px;">
-                Đã có tài khoản?
-                <a href="/Account/Login" class="fw-bold hover:underline" style="color: #1d4ed8; text-decoration: none;">Đăng nhập</a>
-            </p>
+            <div class="login-link">
+                Đã có tài khoản? <a href="/Account/Login">Đăng nhập ngay</a>
+            </div>
         </div>
     </div>
 
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
