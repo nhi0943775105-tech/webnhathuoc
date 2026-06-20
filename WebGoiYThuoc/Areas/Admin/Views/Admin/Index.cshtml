@@ -369,7 +369,6 @@
                 <span class="logo-sub">Admin Panel</span>
             </div>
         </a>
-
         <nav class="nav flex-column w-100">
             <a class="nav-link active" id="btn-benh" onclick="switchTab('tab-benh', 'btn-benh')">
                 <span class="material-symbols-outlined">stethoscope</span> Quản lý Bệnh
@@ -403,7 +402,7 @@
 
         <div class="content-body">
 
-            <!-- Tab Benh -->
+            <!-- ============ TAB BỆNH (Sửa / Xóa) ============ -->
             <div class="admin-tab" id="tab-benh">
                 <div class="row g-4">
                     <div class="col-lg-4">
@@ -431,7 +430,9 @@
                             <h5 class="fw-bold mb-3" style="color:#1e3a8a;">Danh sách Bệnh</h5>
                             <div class="table-responsive">
                                 <table class="table table-hover table-custom m-0">
-                                    <thead><tr><th>Mã</th><th>Tên Bệnh</th><th>Mô tả</th></tr></thead>
+                                    <thead>
+                                        <tr><th>Mã</th><th>Tên Bệnh</th><th>Mô tả</th><th width="120px">Hành động</th></tr>
+                                    </thead>
                                     <tbody>
                                         @foreach (var item in Model)
                                         {
@@ -439,6 +440,14 @@
                                                 <td><span class="badge-id">#@item.Id</span></td>
                                                 <td><strong>@item.TenBenh</strong></td>
                                                 <td class="text-muted">@item.MoTaBenh</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editBenh(@item.Id)">
+                                                        <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" onclick="confirmDeleteBenh(@item.Id, '@item.TenBenh.Replace("'", "\\'")')">
+                                                        <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
+                                                    </button>
+                                                </td>
                                             </tr>
                                         }
                                     </tbody>
@@ -449,7 +458,7 @@
                 </div>
             </div>
 
-            <!-- Tab Thuoc -->
+            <!-- ============ TAB THUỐC (Sửa / Xóa) ============ -->
             <div class="admin-tab d-none" id="tab-thuoc">
                 <div class="row g-4">
                     <div class="col-lg-4">
@@ -473,7 +482,9 @@
                             <h5 class="fw-bold mb-3" style="color:#1e3a8a;">Danh mục Thuốc</h5>
                             <div class="table-responsive">
                                 <table class="table table-hover table-custom m-0">
-                                    <thead><tr><th>Mã</th><th>Tên Thuốc</th><th>Công dụng</th></tr></thead>
+                                    <thead>
+                                        <tr><th>Mã</th><th>Tên Thuốc</th><th>Công dụng</th><th width="120px">Hành động</th></tr>
+                                    </thead>
                                     <tbody>
                                         @if (thuocs != null)
                                         {
@@ -483,6 +494,14 @@
                                                     <td><span class="badge-id">#@item.Id</span></td>
                                                     <td><strong class="text-success">@item.TenThuoc</strong></td>
                                                     <td class="text-muted">@item.CongDung</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editThuoc(@item.Id)">
+                                                            <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-danger" onclick="confirmDeleteThuoc(@item.Id, '@item.TenThuoc.Replace("'", "\\'")')">
+                                                            <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             }
                                         }
@@ -494,7 +513,7 @@
                 </div>
             </div>
 
-            <!-- Tab Trieu Chung -->
+            <!-- ============ TAB TRIỆU CHỨNG (Sửa / Xóa) ============ -->
             <div class="admin-tab d-none" id="tab-trieuchung">
                 <div class="row g-4">
                     <div class="col-lg-4">
@@ -518,7 +537,9 @@
                             <h5 class="fw-bold mb-3" style="color:#1e3a8a;">Từ điển Triệu Chứng</h5>
                             <div class="table-responsive">
                                 <table class="table table-hover table-custom m-0">
-                                    <thead><tr><th>Mã</th><th>Tên Triệu Chứng</th><th>Mô tả</th></tr></thead>
+                                    <thead>
+                                        <tr><th>Mã</th><th>Tên Triệu Chứng</th><th>Mô tả</th><th width="120px">Hành động</th></tr>
+                                    </thead>
                                     <tbody>
                                         @if (trieuChungs != null)
                                         {
@@ -528,6 +549,14 @@
                                                     <td><span class="badge-id">#@item.Id</span></td>
                                                     <td><strong class="text-warning">@item.TenTrieuChung</strong></td>
                                                     <td class="text-muted">@item.MoTa</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editTrieuChung(@item.Id)">
+                                                            <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-danger" onclick="confirmDeleteTrieuChung(@item.Id, '@item.TenTrieuChung.Replace("'", "\\'")')">
+                                                            <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             }
                                         }
@@ -539,7 +568,7 @@
                 </div>
             </div>
 
-            <!-- Tab Lien Ket -->
+            <!-- ============ TAB LIÊN KẾT ============ -->
             <div class="admin-tab d-none" id="tab-lienket">
                 <div class="card-custom mb-4">
                     <h5 class="fw-bold mb-4" style="color:#1e3a8a;">Thiết lập Liên kết Bệnh - Triệu chứng - Thuốc</h5>
@@ -663,6 +692,165 @@
                 </div>
             </div>
 
+        </div> <!-- /content-body -->
+    </div> <!-- /main-area -->
+    <!-- ========== MODAL SỬA BỆNH ========== -->
+    <div class="modal fade" id="editBenhModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-0" style="background: #f8fafc; border-radius: 16px 16px 0 0;">
+                    <h5 class="modal-title fw-bold" style="color: #1e3a8a;">
+                        <span class="material-symbols-outlined" style="vertical-align: middle;">edit</span> Sửa Bệnh
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editBenhId" />
+                    <div class="mb-3">
+                        <label class="form-label">Tên bệnh</label>
+                        <input type="text" id="editTenBenh" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mô tả</label>
+                        <textarea id="editMoTaBenh" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Lời khuyên</label>
+                        <textarea id="editLoiKhuyen" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-emerald" onclick="submitEditBenh()">Lưu thay đổi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL XÓA BỆNH ========== -->
+    <div class="modal fade" id="deleteBenhConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-0" style="background: #fef2f2; border-radius: 16px 16px 0 0;">
+                    <h5 class="modal-title fw-bold" style="color: #b91c1c;">
+                        <span class="material-symbols-outlined" style="vertical-align: middle;">delete_forever</span> Xác nhận xóa bệnh
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>Bạn có chắc muốn xóa bệnh <strong id="deleteBenhName" class="text-danger"></strong>?</p>
+                    <p class="text-muted small">Hành động này không thể hoàn tác.</p>
+                    <input type="hidden" id="deleteBenhId" />
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" onclick="executeDeleteBenh()">Xóa vĩnh viễn</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL SỬA THUỐC ========== -->
+    <div class="modal fade" id="editThuocModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-0" style="background: #f8fafc; border-radius: 16px 16px 0 0;">
+                    <h5 class="modal-title fw-bold" style="color: #1e3a8a;">
+                        <span class="material-symbols-outlined" style="vertical-align: middle;">edit</span> Sửa Thuốc
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editThuocId" />
+                    <div class="mb-3">
+                        <label class="form-label">Tên thuốc</label>
+                        <input type="text" id="editTenThuoc" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Công dụng</label>
+                        <textarea id="editCongDung" class="form-control" rows="6"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-emerald" onclick="submitEditThuoc()">Lưu thay đổi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL XÓA THUỐC ========== -->
+    <div class="modal fade" id="deleteThuocConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-0" style="background: #fef2f2; border-radius: 16px 16px 0 0;">
+                    <h5 class="modal-title fw-bold" style="color: #b91c1c;">
+                        <span class="material-symbols-outlined" style="vertical-align: middle;">delete_forever</span> Xác nhận xóa thuốc
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>Bạn có chắc muốn xóa thuốc <strong id="deleteThuocName" class="text-danger"></strong>?</p>
+                    <p class="text-muted small">Hành động này không thể hoàn tác.</p>
+                    <input type="hidden" id="deleteThuocId" />
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" onclick="executeDeleteThuoc()">Xóa vĩnh viễn</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL SỬA TRIỆU CHỨNG ========== -->
+    <div class="modal fade" id="editTrieuChungModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-0" style="background: #f8fafc; border-radius: 16px 16px 0 0;">
+                    <h5 class="modal-title fw-bold" style="color: #1e3a8a;">
+                        <span class="material-symbols-outlined" style="vertical-align: middle;">edit</span> Sửa Triệu Chứng
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editTcId" />
+                    <div class="mb-3">
+                        <label class="form-label">Tên triệu chứng</label>
+                        <input type="text" id="editTenTrieuChung" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mô tả</label>
+                        <textarea id="editMoTa" class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-emerald" onclick="submitEditTrieuChung()">Lưu thay đổi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MODAL XÓA TRIỆU CHỨNG ========== -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                <div class="modal-header border-0" style="background: #fef2f2; border-radius: 16px 16px 0 0;">
+                    <h5 class="modal-title fw-bold" style="color: #b91c1c;">
+                        <span class="material-symbols-outlined" style="vertical-align: middle;">delete_forever</span> Xác nhận xóa
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>Bạn có chắc muốn xóa triệu chứng <strong id="deleteTcName" class="text-danger"></strong>?</p>
+                    <p class="text-muted small">Hành động này không thể hoàn tác.</p>
+                    <input type="hidden" id="deleteTcId" />
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger" onclick="executeDeleteTrieuChung()">Xóa vĩnh viễn</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -670,13 +858,12 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // ========== CHUYỂN TAB ==========
         function switchTab(tabId, btnId) {
             document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.add('d-none'));
             document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active'));
-
             document.getElementById(tabId).classList.remove('d-none');
             document.getElementById(btnId).classList.add('active');
-
             var titleMap = {
                 'btn-benh': 'Quản lý Bệnh Lý',
                 'btn-thuoc': 'Quản lý Thuốc',
@@ -686,6 +873,211 @@
             document.getElementById('txt-current-title').innerText = titleMap[btnId] || 'Quản trị';
         }
 
+        // ========== CÁC HÀM CHO BỆNH ==========
+        async function editBenh(id) {
+            try {
+                const response = await fetch(`/Admin/Admin/GetBenh?id=${id}`);
+                if (!response.ok) throw new Error('Không tìm thấy bệnh.');
+                const data = await response.json();
+                document.getElementById('editBenhId').value = id;
+                document.getElementById('editTenBenh').value = data.tenBenh || '';
+                document.getElementById('editMoTaBenh').value = data.moTaBenh || '';
+                document.getElementById('editLoiKhuyen').value = data.loiKhuyen || '';
+                const modal = new bootstrap.Modal(document.getElementById('editBenhModal'));
+                modal.show();
+            } catch (err) {
+                alert('Lỗi: ' + err.message);
+            }
+        }
+
+        async function submitEditBenh() {
+            const id = document.getElementById('editBenhId').value;
+            const ten = document.getElementById('editTenBenh').value.trim();
+            const mota = document.getElementById('editMoTaBenh').value.trim();
+            const loiKhuyen = document.getElementById('editLoiKhuyen').value.trim();
+            if (!ten) {
+                alert('Tên bệnh không được để trống.');
+                return;
+            }
+            try {
+                const formData = new FormData();
+                formData.append('TenBenh', ten);
+                formData.append('MoTaBenh', mota);
+                formData.append('LoiKhuyen', loiKhuyen);
+                const response = await fetch(`/Admin/Admin/UpdateBenh?id=${id}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(errText || 'Cập nhật thất bại.');
+                }
+                bootstrap.Modal.getInstance(document.getElementById('editBenhModal')).hide();
+                window.location.href = '/Admin/Admin?activeTab=tab-benh';
+            } catch (err) {
+                alert('Lỗi: ' + err.message);
+            }
+        }
+
+        function confirmDeleteBenh(id, name) {
+            document.getElementById('deleteBenhId').value = id;
+            document.getElementById('deleteBenhName').innerText = name;
+            const modal = new bootstrap.Modal(document.getElementById('deleteBenhConfirmModal'));
+            modal.show();
+        }
+
+        async function executeDeleteBenh() {
+            const id = document.getElementById('deleteBenhId').value;
+            try {
+                const response = await fetch(`/Admin/Admin/DeleteBenh?id=${id}`, {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(errText || 'Xóa thất bại.');
+                }
+                bootstrap.Modal.getInstance(document.getElementById('deleteBenhConfirmModal')).hide();
+                window.location.href = '/Admin/Admin?activeTab=tab-benh';
+            } catch (err) {
+                alert('Lỗi: ' + err.message);
+            }
+        }
+
+        // ========== CÁC HÀM CHO THUỐC ==========
+        async function editThuoc(id) {
+            try {
+                const response = await fetch(`/Admin/Admin/GetThuoc?id=${id}`);
+                if (!response.ok) throw new Error('Không tìm thấy thuốc.');
+                const data = await response.json();
+                document.getElementById('editThuocId').value = id;
+                document.getElementById('editTenThuoc').value = data.tenThuoc || '';
+                document.getElementById('editCongDung').value = data.congDung || '';
+                const modal = new bootstrap.Modal(document.getElementById('editThuocModal'));
+                modal.show();
+            } catch (err) {
+                alert('Lỗi: ' + err.message);
+            }
+        }
+
+        async function submitEditThuoc() {
+            const id = document.getElementById('editThuocId').value;
+            const ten = document.getElementById('editTenThuoc').value.trim();
+            const congDung = document.getElementById('editCongDung').value.trim();
+            if (!ten) {
+                alert('Tên thuốc không được để trống.');
+                return;
+            }
+            try {
+                const formData = new FormData();
+                formData.append('TenThuoc', ten);
+                formData.append('CongDung', congDung);
+                const response = await fetch(`/Admin/Admin/UpdateThuoc?id=${id}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(errText || 'Cập nhật thất bại.');
+                }
+                bootstrap.Modal.getInstance(document.getElementById('editThuocModal')).hide();
+                window.location.href = '/Admin/Admin?activeTab=tab-thuoc';
+            } catch (err) {
+                alert('Lỗi: ' + err.message);
+            }
+        }
+
+        function confirmDeleteThuoc(id, name) {
+            document.getElementById('deleteThuocId').value = id;
+            document.getElementById('deleteThuocName').innerText = name;
+            const modal = new bootstrap.Modal(document.getElementById('deleteThuocConfirmModal'));
+            modal.show();
+        }
+
+        async function executeDeleteThuoc() {
+            const id = document.getElementById('deleteThuocId').value;
+            try {
+                const response = await fetch(`/Admin/Admin/DeleteThuoc?id=${id}`, {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(errText || 'Xóa thất bại.');
+                }
+                bootstrap.Modal.getInstance(document.getElementById('deleteThuocConfirmModal')).hide();
+                window.location.href = '/Admin/Admin?activeTab=tab-thuoc';
+            } catch (err) {
+                alert('Lỗi: ' + err.message);
+            }
+        }
+
+        // ========== CÁC HÀM CHO TRIỆU CHỨNG ==========
+        async function editTrieuChung(id) {
+            try {
+                const response = await fetch(`/Admin/Admin/GetTrieuChung?id=${id}`);
+                if (!response.ok) throw new Error('Không tìm thấy triệu chứng.');
+                const data = await response.json();
+                document.getElementById('editTcId').value = id;
+                document.getElementById('editTenTrieuChung').value = data.tenTrieuChung || '';
+                document.getElementById('editMoTa').value = data.moTa || '';
+                const modal = new bootstrap.Modal(document.getElementById('editTrieuChungModal'));
+                modal.show();
+            } catch (err) {
+                alert('Lỗi: ' + err.message);
+            }
+        }
+
+        async function submitEditTrieuChung() {
+            const id = document.getElementById('editTcId').value;
+            const ten = document.getElementById('editTenTrieuChung').value.trim();
+            const mota = document.getElementById('editMoTa').value.trim();
+            if (!ten) {
+                alert('Tên triệu chứng không được để trống.');
+                return;
+            }
+            try {
+                const formData = new FormData();
+                formData.append('TenTrieuChung', ten);
+                formData.append('MoTa', mota);
+                const response = await fetch(`/Admin/Admin/UpdateTrieuChung?id=${id}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(errText || 'Cập nhật thất bại.');
+                }
+                bootstrap.Modal.getInstance(document.getElementById('editTrieuChungModal')).hide();
+                window.location.href = '/Admin/Admin?activeTab=tab-trieuchung';
+            } catch (err) {
+                alert('Lỗi: ' + err.message);
+            }
+        }
+
+        function confirmDeleteTrieuChung(id, name) {
+            document.getElementById('deleteTcId').value = id;
+            document.getElementById('deleteTcName').innerText = name;
+            const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+            modal.show();
+        }
+
+        async function executeDeleteTrieuChung() {
+            const id = document.getElementById('deleteTcId').value;
+            try {
+                const response = await fetch(`/Admin/Admin/DeleteTrieuChung?id=${id}`, {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(errText || 'Xóa thất bại.');
+                }
+                bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal')).hide();
+                window.location.href = '/Admin/Admin?activeTab=tab-trieuchung';
+            } catch (err) {
+                alert('Lỗi: ' + err.message);
+            }
+        }
+
+        // ========== KHỞI TẠO TAB ==========
         document.addEventListener("DOMContentLoaded", function () {
             var activeTabFromBackend = "@ViewBag.ActiveTab";
             if (activeTabFromBackend === "tab-lienket") {
