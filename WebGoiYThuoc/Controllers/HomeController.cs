@@ -74,29 +74,31 @@ namespace WebGoiYThuoc.Controllers
         {
             if (string.IsNullOrWhiteSpace(symptoms)) return Json(new { advice = "" });
 
-            // 1. Lấy API Key từ cấu hình
+            // Đọc tất cả cấu hình từ 1 nơi: appsettings.json
             string apiKey = _configuration["GeminiApiKey"];
+            string apiUrl = _configuration["GeminiApiSettings:ApiUrl"] ?? "https://generativelanguage.googleapis.com/v1beta";
+            string model = _configuration["GeminiApiSettings:DefaultModel"] ?? "gemini-flash-latest";
+            int timeout = int.TryParse(_configuration["GeminiApiSettings:TimeoutSeconds"], out var t) ? t : 30;
+
             if (string.IsNullOrEmpty(apiKey)) return Json(new { advice = "🤖 **Lỗi hệ thống:** Chưa tìm thấy API Key." });
 
-            // 2. Viết câu Prompt (Nhắc lệnh) giao việc cho AI
+            // Prompt giữ nguyên
             string prompt = $"Bạn là một Dược sĩ/Bác sĩ tư vấn y tế trực tuyến. Bệnh nhân có triệu chứng: [{symptoms}]. Hãy đánh giá mức độ nghiêm trọng và đưa ra lời khuyên y tế, cách chăm sóc tại nhà an toàn (Dưới 150 chữ, dùng markdown, dùng biểu tượng cảm xúc y tế). Cuối cùng luôn nhắc họ xem gợi ý thuốc và bệnh theo triệu chứng bên dưới.";
 
             using var client = new HttpClient();
-            string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}";
+            client.Timeout = TimeSpan.FromSeconds(timeout);
+            string url = $"{apiUrl}/models/{model}:generateContent?key={apiKey}";
 
-            // 3. Đóng gói dữ liệu gửi đi
             var requestBody = new { contents = new[] { new { parts = new[] { new { text = prompt } } } } };
             var jsonContent = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
 
             try
             {
-                // 4. Bắn tín hiệu sang Google và chờ nhận kết quả
                 var response = await client.PostAsync(url, jsonContent);
                 var responseString = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
                 {
-                    // Bóc tách nội dung câu trả lời
                     using var doc = JsonDocument.Parse(responseString);
                     var text = doc.RootElement
                         .GetProperty("candidates")[0]
@@ -108,9 +110,9 @@ namespace WebGoiYThuoc.Controllers
                 }
                 return Json(new { advice = $"🤖 **Lỗi AI:** Google từ chối. (Mã: {response.StatusCode})" });
             }
-            catch
+            catch (Exception ex)
             {
-                return Json(new { advice = "🤖 **Lỗi mạng:** Không thể kết nối tới Google Gemini." });
+                return Json(new { advice = $"🤖 **Lỗi mạng:** Không thể kết nối tới Google Gemini. Chi tiết: {ex.Message}" });
             }
         }
 
