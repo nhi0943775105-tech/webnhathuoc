@@ -83,7 +83,14 @@ namespace WebGoiYThuoc.Controllers
             if (string.IsNullOrEmpty(apiKey)) return Json(new { advice = "🤖 **Lỗi hệ thống:** Chưa tìm thấy API Key." });
 
             // Prompt giữ nguyên
-            string prompt = $"Bạn là một Dược sĩ/Bác sĩ tư vấn y tế trực tuyến. Bệnh nhân có triệu chứng: [{symptoms}]. Hãy đánh giá mức độ nghiêm trọng và đưa ra lời khuyên y tế, cách chăm sóc tại nhà an toàn (Dưới 150 chữ, dùng markdown, dùng biểu tượng cảm xúc y tế). Cuối cùng luôn nhắc họ xem gợi ý thuốc và bệnh theo triệu chứng bên dưới.";
+            string prompt = $"Bạn là Dược sĩ/Bác sĩ tư vấn y tế trực tuyến. Bệnh nhân có triệu chứng: [{symptoms}]. " +
+                            "Hãy trả lời bằng tiếng Việt, chuyên nghiệp, ngắn gọn. Sử dụng Markdown và biểu tượng cảm xúc y tế. " +
+                            "Tuân thủ nghiêm ngặt cấu trúc sau (mỗi phần 1-2 câu, tổng bài không quá 200 từ):\n\n" +
+                            "**🩺 Đánh giá nhanh:** (mức độ nghiêm trọng, khả năng bệnh lý)\n" +
+                            "**💊 Lời khuyên y tế:** (nên làm gì, dùng thuốc gì nếu cần)\n" +
+                            "**🏠 Chăm sóc tại nhà:** (nghỉ ngơi, dinh dưỡng, theo dõi)\n" +
+                            "**⚠️ Lưu ý:** (dấu hiệu cần đi khám ngay)\n\n" +
+                            "Kết thúc bằng dòng: 👉 Kéo xuống để xem gợi ý thuốc và bệnh phù hợp.";
 
             using var client = new HttpClient();
             client.Timeout = TimeSpan.FromSeconds(timeout);
