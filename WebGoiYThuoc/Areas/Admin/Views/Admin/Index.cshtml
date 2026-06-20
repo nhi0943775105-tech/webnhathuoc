@@ -11,567 +11,658 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hệ Thống Quản Trị - WebGoiYThuoc</title>
+    <title>Quản trị - MedSuggest</title>
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
     <style>
-        body {
-            background-color: #F8FAFC; /* Màu nền xám nhẹ chuẩn Concept Figma */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
-            color: #1E293B;
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --bg-light: #f8fafc;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow: 0 4px 12px rgba(0,0,0,0.04);
+            --font: 'Inter', system-ui, -apple-system, sans-serif;
         }
-        /* Cấu trúc Layout Admin */
-        .admin-container {
+
+        body {
+            font-family: var(--font);
+            background: var(--bg-light);
+            color: var(--text-main);
+            margin: 0;
             display: flex;
             min-height: 100vh;
         }
-        /* Sidebar bên trái theo hệ màu xanh Navy đậm đà của Figma (#1e3a8a) */
+
+        /* Sidebar */
         .sidebar {
-            width: 260px;
-            background-color: #1e3a8a;
-            color: #ffffff;
-            flex-shrink: 0;
-            padding: 24px 16px;
-            box-shadow: 4px 0 12px rgba(30, 58, 138, 0.05);
+            width: 280px;
+            background: linear-gradient(180deg, #0f172a 0%, #1e3a8a 100%);
+            color: white;
             display: flex;
             flex-direction: column;
+            padding: 28px 16px;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.08);
+            flex-shrink: 0;
         }
 
-        .sidebar-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 24px;
-        }
-
-        .sidebar .nav-link {
-            color: #93c5fd;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 6px;
-            font-weight: 600;
+        .sidebar-logo {
             display: flex;
             align-items: center;
             gap: 12px;
+            padding-bottom: 24px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
             text-decoration: none;
-            transition: all 0.2s ease;
-            font-size: 14px;
+            color: white;
         }
 
-            .sidebar .nav-link:hover, .sidebar .nav-link.active {
-                background-color: rgba(255, 255, 255, 0.1);
-                color: #ffffff;
+            .sidebar-logo:hover {
+                color: white;
             }
-        /* Vùng nội dung bên phải */
-        .main-content {
-            flex-grow: 1;
+
+            .sidebar-logo .logo-icon {
+                font-size: 28px;
+                color: #60a5fa;
+            }
+
+            .sidebar-logo .logo-text {
+                font-size: 1.3rem;
+                font-weight: 700;
+                letter-spacing: -0.3px;
+            }
+
+            .sidebar-logo .logo-sub {
+                font-size: 0.65rem;
+                font-weight: 500;
+                color: #93c5fd;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                display: block;
+            }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            color: #bfdbfe;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-decoration: none;
+            margin-bottom: 4px;
+            transition: background 0.2s, color 0.2s;
+            cursor: pointer;
+        }
+
+            .nav-link:hover {
+                background: rgba(255,255,255,0.12);
+                color: white;
+            }
+
+            .nav-link.active {
+                background: rgba(255,255,255,0.18);
+                color: white;
+                font-weight: 600;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+            .nav-link .material-symbols-outlined {
+                font-size: 20px;
+            }
+
+        /* Main */
+        .main-area {
+            flex: 1;
             display: flex;
             flex-direction: column;
+            min-width: 0;
         }
-        /* Thanh Top Bar trắng tinh khôi chuẩn Figma */
-        .main-header {
-            background-color: #ffffff;
-            border-bottom: 1px solid #E2E8F0;
-            padding: 16px 32px;
+
+        .top-header {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 16px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        /* Vùng chứa nội dung các form/bảng */
-        .content-body {
-            padding: 32px;
-            flex-grow: 1;
-        }
-        /* Khối Card bo góc rộng và đổ bóng mịn màng mượt mà của Figma */
-        .card-custom {
-            border: 1px solid #E2E8F0;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
-            background-color: #ffffff;
-            padding: 24px;
-        }
-        /* Đồng bộ ô nhập liệu input & textarea tinh giản */
-        .form-control {
-            border: 1px solid #CBD5E1;
-            border-radius: 8px;
-            padding: 10px 14px;
-            font-size: 14px;
-            transition: all 0.2s;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.02);
         }
 
-            .form-control:focus {
-                border-color: #1e3a8a;
-                box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        .page-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin: 0;
+        }
+
+        .user-area {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-info {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+            .user-info strong {
+                font-size: 0.9rem;
+                color: #0f172a;
+                display: block;
             }
-        /* Nút bấm Lưu màu xanh lá Emerald nhấn mạnh tính hành động an toàn như RegisterPage */
-        .btn-emerald-custom {
-            background-color: #10b981;
-            color: white;
-            border: none;
-            font-weight: 600;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-size: 14px;
+
+        .btn-home {
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            background: white;
+            color: #475569;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
             transition: background 0.2s;
         }
 
-            .btn-emerald-custom:hover {
-                background-color: #059669;
+            .btn-home:hover {
+                background: #f1f5f9;
+                color: #1e3a8a;
+            }
+
+        /* Content */
+        .content-body {
+            padding: 28px;
+            flex: 1;
+        }
+
+        .card-custom {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            height: 100%;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .form-control {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-size: 0.9rem;
+            background: #f8fafc;
+            transition: 0.2s;
+            font-family: var(--font);
+        }
+
+            .form-control:focus {
+                border-color: var(--secondary);
+                box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+                background: white;
+            }
+
+        .btn-emerald {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+        }
+
+            .btn-emerald:hover {
+                background: linear-gradient(135deg, #059669 0%, #047857 100%);
+                box-shadow: 0 6px 14px rgba(16, 185, 129, 0.35);
                 color: white;
             }
-        /* Thiết kế Table gọn gàng sạch sẽ */
+
         .table-custom th {
-            background-color: #F8FAFC;
-            color: #64748B;
+            background: #f8fafc;
+            color: #64748b;
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.5px;
+            font-size: 0.7rem;
+            letter-spacing: 0.8px;
             padding: 14px;
-            border-bottom: 2px solid #E2E8F0;
+            border-bottom: 2px solid #e2e8f0;
         }
 
         .table-custom td {
             padding: 14px;
-            border-bottom: 1px solid #E2E8F0;
-            font-size: 14px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
         }
 
         .badge-id {
-            background-color: #F1F5F9;
-            color: #475569;
+            background: #f1f5f9;
+            color: #334155;
             font-family: monospace;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Link tab specific */
+        .selectable-card {
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            background: white;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+            .selectable-card:hover {
+                border-color: #cbd5e1;
+                background: #f8fafc;
+            }
+
+        .card-radio-input:checked + .selectable-card {
+            border-color: var(--primary);
+            background: #eff6ff;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+
+        .card-checkbox-input:checked + .selectable-card {
+            border-color: var(--secondary);
+            background: #ecfdf5;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+
+        .card-radio-input:checked + .selectable-card .card-icon-box {
+            background: var(--primary);
+            color: white;
+        }
+
+        .card-checkbox-input:checked + .selectable-card .card-icon-box {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .card-icon-box {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: 0.2s;
+            flex-shrink: 0;
+        }
+
+        .card-radio-input, .card-checkbox-input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Responsive */
+        @@media (max-width: 992px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 16px;
+            }
+
+                .sidebar .nav-link {
+                    width: auto;
+                    margin-right: 8px;
+                }
         }
     </style>
 </head>
 <body>
 
-    <div class="admin-container">
-
-        <div class="sidebar">
-            <div class="sidebar-brand">
-                <span style="font-size: 24px;">🧬</span>
-                <div>
-                    <h5 class="fw-bold m-0 text-white" style="letter-spacing: -0.5px; font-size: 18px;">MEDIC ADMIN</h5>
-                    <small class="text-uppercase" style="font-size: 9px; letter-spacing: 1px; color: #93c5fd; font-weight: 700;">Hệ thống gợi ý thuốc</small>
-                </div>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="/" class="sidebar-logo">
+            <span class="material-symbols-outlined logo-icon">medical_services</span>
+            <div>
+                <span class="logo-text">MedSuggest</span>
+                <span class="logo-sub">Admin Panel</span>
             </div>
+        </a>
 
-            <nav class="nav flex-column">
-                <a href="#" class="nav-link active" id="btn-benh" onclick="switchTab('tab-benh', 'btn-benh')">
-                    <span>🏥</span> Quản lý Bệnh Lý
+        <nav class="nav flex-column w-100">
+            <a class="nav-link active" id="btn-benh" onclick="switchTab('tab-benh', 'btn-benh')">
+                <span class="material-symbols-outlined">stethoscope</span> Quản lý Bệnh
+            </a>
+            <a class="nav-link" id="btn-thuoc" onclick="switchTab('tab-thuoc', 'btn-thuoc')">
+                <span class="material-symbols-outlined">pill</span> Quản lý Thuốc
+            </a>
+            <a class="nav-link" id="btn-trieuchung" onclick="switchTab('tab-trieuchung', 'btn-trieuchung')">
+                <span class="material-symbols-outlined">sick</span> Quản lý Triệu Chứng
+            </a>
+            <a class="nav-link" id="btn-lienket" onclick="switchTab('tab-lienket', 'btn-lienket')">
+                <span class="material-symbols-outlined">link</span> Liên Kết Dữ Liệu
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Area -->
+    <div class="main-area">
+        <div class="top-header">
+            <h1 class="page-title" id="txt-current-title">Quản lý Bệnh Lý</h1>
+            <div class="user-area">
+                <div class="user-info">
+                    <span>Quản trị viên</span>
+                    <strong>@currentUsername</strong>
+                </div>
+                <a href="/" class="btn-home">
+                    <span class="material-symbols-outlined" style="font-size:18px;">home</span> Trang chủ
                 </a>
-                <a href="#" class="nav-link" id="btn-thuoc" onclick="switchTab('tab-thuoc', 'btn-thuoc')">
-                    <span>💊</span> Quản lý Thuốc
-                </a>
-                <a href="#" class="nav-link" id="btn-trieuchung" onclick="switchTab('tab-trieuchung', 'btn-trieuchung')">
-                    <span>🤒</span> Quản lý Triệu Chứng
-                </a>
-                <a href="#" class="nav-link" id="btn-lienket" onclick="switchTab('tab-lienket', 'btn-lienket')">
-                    <span>🔗</span> Cấu Hình Liên Kết Bệnh
-                </a>
-            </nav>
+            </div>
         </div>
 
-        <div class="main-content">
+        <div class="content-body">
 
-            <div class="main-header">
-                <div>
-                    <h4 class="m-0 fw-bold" id="txt-current-title" style="color: #1e3a8a; font-size: 20px; tracking: -0.5px;">Quản Lý Bệnh Lý</h4>
-                </div>
-                <div class="d-flex align-items-center gap-3">
-                    <div class="text-end">
-                        <span class="d-block text-muted" style="font-size: 11px;">Tài khoản quản trị</span>
-                        <strong class="small" style="color: #1e3a8a;">👤 @currentUsername</strong>
+            <!-- Tab Benh -->
+            <div class="admin-tab" id="tab-benh">
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-3" style="color:#1e3a8a;"><span class="material-symbols-outlined" style="vertical-align: middle;">add_circle</span> Thêm Bệnh Lý</h5>
+                            <form asp-area="Admin" asp-controller="Admin" asp-action="AddBenh" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Tên bệnh</label>
+                                    <input type="text" name="TenBenh" class="form-control" required placeholder="Ví dụ: Cảm cúm, Viêm xoang..." />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Mô tả</label>
+                                    <textarea name="MoTaBenh" class="form-control" rows="3" placeholder="Mô tả biểu hiện bệnh..."></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Lời khuyên</label>
+                                    <textarea name="LoiKhuyen" class="form-control" rows="3" placeholder="Chế độ chăm sóc, dinh dưỡng..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-emerald w-100"><span class="material-symbols-outlined" style="font-size:18px;">save</span> Lưu bệnh</button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="vr" style="height: 24px; color: #E2E8F0;"></div>
-                    <a href="/" class="btn btn-sm btn-outline-secondary px-3 rounded-lg fw-semibold text-sm transition" style="font-size: 13px;">🏠 Quay lại trang chủ</a>
+                    <div class="col-lg-8">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-3" style="color:#1e3a8a;">Danh sách Bệnh</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-custom m-0">
+                                    <thead><tr><th>Mã</th><th>Tên Bệnh</th><th>Mô tả</th></tr></thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td><span class="badge-id">#@item.Id</span></td>
+                                                <td><strong>@item.TenBenh</strong></td>
+                                                <td class="text-muted">@item.MoTaBenh</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="content-body">
-
-                <div class="admin-tab" id="tab-benh">
-                    <div class="row g-4">
-                        <div class="col-xl-4">
-                            <div class="card card-custom">
-                                <h5 class="fw-bold mb-3" style="color: #1e3a8a; font-size: 16px;">➕ Thêm Bệnh Lý Mới</h5>
-                                <form asp-area="Admin" asp-controller="Admin" asp-action="AddBenh" method="POST">
-                                    <div class="mb-3">
-                                        <label class="form-label small fw-bold text-secondary">Tên bệnh lý</label>
-                                        <input type="text" name="TenBenh" class="form-control" required placeholder="Ví dụ: Cảm cúm, Viêm xoang..." />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label small fw-bold text-secondary">Mô tả tổng quan</label>
-                                        <textarea name="MoTaBenh" class="form-control" rows="3" placeholder="Nhập tóm tắt biểu hiện bệnh..."></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label small fw-bold text-secondary">Lời khuyên chăm sóc</label>
-                                        <textarea name="LoiKhuyen" class="form-control" rows="3" placeholder="Chế độ dinh dưỡng, nghỉ ngơi..."></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-emerald-custom w-100 py-2">Lưu vào cơ sở dữ liệu</button>
-                                </form>
-                            </div>
+            <!-- Tab Thuoc -->
+            <div class="admin-tab d-none" id="tab-thuoc">
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-3" style="color:#1e3a8a;"><span class="material-symbols-outlined" style="vertical-align: middle;">add_circle</span> Thêm Thuốc</h5>
+                            <form asp-area="Admin" asp-controller="Admin" asp-action="AddThuoc" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Tên thuốc</label>
+                                    <input type="text" name="TenThuoc" class="form-control" required placeholder="Paracetamol..." />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Công dụng</label>
+                                    <textarea name="CongDung" class="form-control" rows="6" placeholder="Chỉ định, liều dùng..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-emerald w-100"><span class="material-symbols-outlined" style="font-size:18px;">save</span> Lưu thuốc</button>
+                            </form>
                         </div>
-                        <div class="col-xl-8">
-                            <div class="card card-custom">
-                                <h5 class="fw-bold mb-3" style="color: #1e3a8a; font-size: 16px;">📋 Cơ Sở Dữ Liệu Bệnh Lý</h5>
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle table-custom m-0">
-                                        <thead>
-                                            <tr>
-                                                <th width="12%">Mã Số</th>
-                                                <th width="28%">Tên Bệnh Lý</th>
-                                                <th width="60%">Mô Tả Lâm Sàng</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var item in Model)
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-3" style="color:#1e3a8a;">Danh mục Thuốc</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-custom m-0">
+                                    <thead><tr><th>Mã</th><th>Tên Thuốc</th><th>Công dụng</th></tr></thead>
+                                    <tbody>
+                                        @if (thuocs != null)
+                                        {
+                                            foreach (var item in thuocs)
                                             {
                                                 <tr>
                                                     <td><span class="badge-id">#@item.Id</span></td>
-                                                    <td><strong style="color: #1e3a8a;">@item.TenBenh</strong></td>
-                                                    <td><span class="text-secondary">@item.MoTaBenh</span></td>
+                                                    <td><strong class="text-success">@item.TenThuoc</strong></td>
+                                                    <td class="text-muted">@item.CongDung</td>
                                                 </tr>
                                             }
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="admin-tab d-none" id="tab-thuoc">
-                    <div class="row g-4">
-                        <div class="col-xl-4">
-                            <div class="card card-custom">
-                                <h5 class="fw-bold mb-3" style="color: #1e3a8a; font-size: 16px;">➕ Thêm Thuốc Mới</h5>
-                                <form asp-area="Admin" asp-controller="Admin" asp-action="AddThuoc" method="POST">
-                                    <div class="mb-3">
-                                        <label class="form-label small fw-bold text-secondary">Tên biệt dược / thuốc</label>
-                                        <input type="text" name="TenThuoc" class="form-control" required placeholder="Ví dụ: Paracetamol, Amoxicillin..." />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label small fw-bold text-secondary">Công dụng & Chỉ định</label>
-                                        <textarea name="CongDung" class="form-control" rows="6" placeholder="Giảm đau nhanh, hạ sốt khẩn cấp..."></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-emerald-custom w-100 py-2">Lưu thông tin thuốc</button>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="col-xl-8">
-                            <div class="card card-custom">
-                                <h5 class="fw-bold mb-3" style="color: #1e3a8a; font-size: 16px;">📋 Danh Mục Thuốc Gợi Ý</h5>
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle table-custom m-0">
-                                        <thead>
-                                            <tr>
-                                                <th width="12%">Mã Số</th>
-                                                <th width="28%">Tên Thuốc</th>
-                                                <th width="60%">Công Dụng Chi Tiết</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (thuocs != null)
-                                            {
-                                                foreach (var item in thuocs)
-                                                {
-                                                    <tr>
-                                                        <td><span class="badge-id">#@item.Id</span></td>
-                                                        <td><strong style="color: #059669;">@item.TenThuoc</strong></td>
-                                                        <td><span class="text-secondary">@item.CongDung</span></td>
-                                                    </tr>
-                                                }
-                                            }
-                                        </tbody>
-                                    </table>
+            <!-- Tab Trieu Chung -->
+            <div class="admin-tab d-none" id="tab-trieuchung">
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-3" style="color:#1e3a8a;"><span class="material-symbols-outlined" style="vertical-align: middle;">add_circle</span> Thêm Triệu Chứng</h5>
+                            <form asp-area="Admin" asp-controller="Admin" asp-action="AddTrieuChung" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Tên triệu chứng</label>
+                                    <input type="text" name="TenTrieuChung" class="form-control" required placeholder="Sốt cao, Ho khan..." />
                                 </div>
-                            </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Mô tả</label>
+                                    <textarea name="MoTa" class="form-control" rows="6" placeholder="Biểu hiện chi tiết..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-emerald w-100"><span class="material-symbols-outlined" style="font-size:18px;">save</span> Lưu triệu chứng</button>
+                            </form>
                         </div>
                     </div>
-                </div>
-
-                <div class="admin-tab d-none" id="tab-trieuchung">
-                    <div class="row g-4">
-                        <div class="col-xl-4">
-                            <div class="card card-custom">
-                                <h5 class="fw-bold mb-3" style="color: #1e3a8a; font-size: 16px;">➕ Thêm Triệu Chứng Mới</h5>
-                                <form asp-area="Admin" asp-controller="Admin" asp-action="AddTrieuChung" method="POST">
-                                    <div class="mb-3">
-                                        <label class="form-label small fw-bold text-secondary">Tên triệu chứng nhận biết</label>
-                                        <input type="text" name="TenTrieuChung" class="form-control" required placeholder="Ví dụ: Sốt cao, Ho có đờm..." />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label small fw-bold text-secondary">Mô tả biểu hiện</label>
-                                        <textarea name="MoTa" class="form-control" rows="6" placeholder="Nhiệt độ cơ thể trên 38.5 độ, xuất hiện liên tục..."></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-emerald-custom w-100 py-2">Lưu triệu chứng</button>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="col-xl-8">
-                            <div class="card card-custom">
-                                <h5 class="fw-bold mb-3" style="color: #1e3a8a; font-size: 16px;">📋 Từ Điển Triệu Chứng Lâm Sàng</h5>
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle table-custom m-0">
-                                        <thead>
-                                            <tr>
-                                                <th width="12%">Mã Số</th>
-                                                <th width="28%">Tên Triệu Chứng</th>
-                                                <th width="60%">Ghi Chú Biểu Hiện</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (trieuChungs != null)
-                                            {
-                                                foreach (var item in trieuChungs)
-                                                {
-                                                    <tr>
-                                                        <td><span class="badge-id">#@item.Id</span></td>
-                                                        <td><strong style="color: #b45309;">@item.TenTrieuChung</strong></td>
-                                                        <td><span class="text-secondary">@item.MoTa</span></td>
-                                                    </tr>
-                                                }
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="admin-tab d-none" id="tab-lienket">
-
-                    <style>
-                        /* CSS cho Grid Thẻ dạng nút chọn */
-                        .selectable-card {
-                            border: 1px solid #E2E8F0;
-                            border-radius: 10px;
-                            padding: 12px 16px;
-                            background-color: #ffffff;
-                            cursor: pointer;
-                            transition: all 0.2s ease;
-                            display: flex;
-                            align-items: center;
-                            gap: 10px;
-                            user-select: none;
-                            margin-bottom: 8px;
-                        }
-
-                            .selectable-card:hover {
-                                border-color: #CBD5E1;
-                                background-color: #F8FAFC;
-                                transform: translateY(-1px);
-                            }
-                        /* Style khi thẻ Bệnh được chọn (Xanh Navy chủ đạo) */
-                        .card-radio-input:checked + .selectable-card {
-                            border-color: #1e3a8a;
-                            background-color: #eff6ff;
-                            box-shadow: 0 0 0 1px #1e3a8a;
-                        }
-
-                            .card-radio-input:checked + .selectable-card .card-icon-box {
-                                background-color: #1e3a8a;
-                                color: #ffffff;
-                            }
-                        /* Style khi thẻ Triệu chứng / Thuốc được chọn (Xanh lá Emerald hành động) */
-                        .card-checkbox-input:checked + .selectable-card {
-                            border-color: #10b981;
-                            background-color: #ecfdf5;
-                            box-shadow: 0 0 0 1px #10b981;
-                        }
-
-                            .card-checkbox-input:checked + .selectable-card .card-icon-box {
-                                background-color: #10b981;
-                                color: #ffffff;
-                            }
-                        /* Hộp chứa Icon phụ trợ */
-                        .card-icon-box {
-                            width: 36px;
-                            height: 36px;
-                            border-radius: 8px;
-                            background-color: #F1F5F9;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            font-size: 16px;
-                            transition: all 0.2s ease;
-                            flex-shrink: 0;
-                        }
-                        /* Ẩn hoàn toàn các ô input radio/checkbox gốc */
-                        .card-radio-input, .card-checkbox-input {
-                            position: absolute;
-                            opacity: 0;
-                            width: 0;
-                            height: 0;
-                        }
-                    </style>
-
-                    <div class="card card-custom mb-4">
-                        <h5 class="fw-bold mb-4" style="color: #1e3a8a; font-size: 18px;">🔗 Thiết Lập Mối Quan Hệ Giữa Các Thực Thể Dữ Liệu</h5>
-
-                        <form asp-area="Admin" asp-controller="Admin" asp-action="LinkBenhDetail" method="POST">
-                            <div class="row g-4">
-
-                                <div class="col-lg-4 border-end">
-                                    <label class="form-label small Skinner fw-bold text-primary text-uppercase mb-3 d-block">Bước 1: Chọn bệnh lý gốc</label>
-                                    <div class="overflow-auto pe-2" style="max-height: 340px; min-height: 340px;">
-                                        @foreach (var b in Model)
+                    <div class="col-lg-8">
+                        <div class="card-custom">
+                            <h5 class="fw-bold mb-3" style="color:#1e3a8a;">Từ điển Triệu Chứng</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-custom m-0">
+                                    <thead><tr><th>Mã</th><th>Tên Triệu Chứng</th><th>Mô tả</th></tr></thead>
+                                    <tbody>
+                                        @if (trieuChungs != null)
                                         {
-                                            <label class="d-block position-relative m-0">
-                                                <input type="radio" name="benhId" value="@b.Id" class="card-radio-input" required />
+                                            foreach (var item in trieuChungs)
+                                            {
+                                                <tr>
+                                                    <td><span class="badge-id">#@item.Id</span></td>
+                                                    <td><strong class="text-warning">@item.TenTrieuChung</strong></td>
+                                                    <td class="text-muted">@item.MoTa</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Lien Ket -->
+            <div class="admin-tab d-none" id="tab-lienket">
+                <div class="card-custom mb-4">
+                    <h5 class="fw-bold mb-4" style="color:#1e3a8a;">Thiết lập Liên kết Bệnh - Triệu chứng - Thuốc</h5>
+
+                    <form asp-area="Admin" asp-controller="Admin" asp-action="LinkBenhDetail" method="POST">
+                        <div class="row g-4">
+                            <div class="col-lg-4">
+                                <label class="form-label mb-3">1. Chọn Bệnh</label>
+                                <div style="max-height:350px; overflow-y:auto;">
+                                    @foreach (var b in Model)
+                                    {
+                                        <label class="d-block position-relative">
+                                            <input type="radio" name="benhId" value="@b.Id" class="card-radio-input" required />
+                                            <div class="selectable-card">
+                                                <div class="card-icon-box"><span class="material-symbols-outlined">stethoscope</span></div>
+                                                <div>
+                                                    <div class="fw-bold">@b.TenBenh</div>
+                                                    <small class="text-muted">Mã #@b.Id</small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="form-label mb-3">2. Chọn Triệu Chứng</label>
+                                <div style="max-height:350px; overflow-y:auto;">
+                                    @if (trieuChungs != null)
+                                    {
+                                        foreach (var tc in trieuChungs)
+                                        {
+                                            <label class="d-block position-relative">
+                                                <input type="checkbox" name="selectedTrieuChungs" value="@tc.Id" class="card-checkbox-input" />
                                                 <div class="selectable-card">
-                                                    <div class="card-icon-box">🩺</div>
+                                                    <div class="card-icon-box"><span class="material-symbols-outlined">sick</span></div>
                                                     <div>
-                                                        <div class="fw-bold text-dark" style="font-size: 14px;">@b.TenBenh</div>
-                                                        <div class="text-muted" style="font-size: 11px;">Mã số: #@b.Id</div>
+                                                        <div class="fw-bold">@tc.TenTrieuChung</div>
+                                                        <small class="text-muted">ID @tc.Id</small>
                                                     </div>
                                                 </div>
                                             </label>
                                         }
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4 border-end">
-                                    <label class="form-label small fw-bold text-warning text-uppercase mb-3 d-block">Bước 2: Chọn triệu chứng lâm sàng</label>
-                                    <div class="overflow-auto pe-2" style="max-height: 340px; min-height: 340px;">
-                                        @if (trieuChungs != null)
-                                        {
-                                            foreach (var tc in trieuChungs)
-                                            {
-                                                <label class="d-block position-relative m-0">
-                                                    <input type="checkbox" name="selectedTrieuChungs" value="@tc.Id" class="card-checkbox-input" />
-                                                    <div class="selectable-card">
-                                                        <div class="card-icon-box">⚠️</div>
-                                                        <div>
-                                                            <div class="fw-bold text-dark" style="font-size: 14px;">@tc.TenTrieuChung</div>
-                                                            <div class="text-muted" style="font-size: 11px;">Triệu chứng ID: @tc.Id</div>
-                                                        </div>
-                                                    </div>
-                                                </label>
-                                            }
-                                        }
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <label class="form-label small fw-bold text-success text-uppercase mb-3 d-block">Bước 3: Chọn biệt dược / thuốc gợi ý</label>
-                                    <div class="overflow-auto pe-2" style="max-height: 340px; min-height: 340px;">
-                                        @if (thuocs != null)
-                                        {
-                                            foreach (var th in thuocs)
-                                            {
-                                                <label class="d-block position-relative m-0">
-                                                    <input type="checkbox" name="selectedThuocs" value="@th.Id" class="card-checkbox-input" />
-                                                    <div class="selectable-card">
-                                                        <div class="card-icon-box">💊</div>
-                                                        <div>
-                                                            <div class="fw-bold text-success" style="font-size: 14px;">@th.TenThuoc</div>
-                                                            <div class="text-muted" style="font-size: 11px;">Thuốc ID: @th.Id</div>
-                                                        </div>
-                                                    </div>
-                                                </label>
-                                            }
-                                        }
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="text-end border-top pt-3 mt-4">
-                                <button type="submit" class="btn btn-emerald-custom px-5 py-2.5 shadow-sm rounded-lg">🌿 Xác nhận lưu cấu hình liên kết</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="card card-custom">
-                        <h6 class="fw-bold mb-3 text-secondary" style="font-size: 15px;">📊 Bảng Tổng Hợp Bản Đồ Dữ Liệu Đã Liên Kết</h6>
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle border m-0" style="font-size: 14px; border-radius: 8px; overflow: hidden;">
-                                <thead class="table-dark" style="background-color: #1e3a8a;">
-                                    <tr>
-                                        <th style="width: 25%; padding: 14px;">Tên Bệnh Lý</th>
-                                        <th style="width: 40%; padding: 14px;">Triệu Chứng Lâm Sàng Đi Kèm</th>
-                                        <th style="width: 35%; padding: 14px;">Danh Mục Thuốc Điều Trị Gợi Ý</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td class="fw-bold text-primary" style="padding: 14px;">
-                                                <span class="me-1">🩺</span> @item.TenBenh
-                                            </td>
-                                            <td style="padding: 14px;">
-                                                @if (item.TrieuChungs != null && item.TrieuChungs.Any())
-                                                {
-                                                    foreach (var tc in item.TrieuChungs)
-                                                    {
-                                                        <span class="badge text-dark me-1 mb-1 px-2 py-1.5" style="font-size: 12px; font-weight: 600; background-color: #fef08a; border: 1px solid #fef08a;">⚠️ @tc.TenTrieuChung</span>
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    <span class="text-muted small"><em>Chưa gán triệu chứng</em></span>
-                                                }
-                                            </td>
-                                            <td style="padding: 14px;">
-                                                @if (item.Thuocs != null && item.Thuocs.Any())
-                                                {
-                                                    foreach (var th in item.Thuocs)
-                                                    {
-                                                        <span class="badge text-white me-1 mb-1 px-2 py-1.5" style="font-size: 12px; font-weight: 600; background-color: #10b981;">💊 @th.TenThuoc</span>
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    <span class="text-muted small"><em>Chưa gán thuốc gợi ý</em></span>
-                                                }
-                                            </td>
-                                        </tr>
                                     }
-                                </tbody>
-                            </table>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="form-label mb-3">3. Chọn Thuốc</label>
+                                <div style="max-height:350px; overflow-y:auto;">
+                                    @if (thuocs != null)
+                                    {
+                                        foreach (var th in thuocs)
+                                        {
+                                            <label class="d-block position-relative">
+                                                <input type="checkbox" name="selectedThuocs" value="@th.Id" class="card-checkbox-input" />
+                                                <div class="selectable-card">
+                                                    <div class="card-icon-box"><span class="material-symbols-outlined">pill</span></div>
+                                                    <div>
+                                                        <div class="fw-bold text-success">@th.TenThuoc</div>
+                                                        <small class="text-muted">ID @th.Id</small>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        }
+                                    }
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="text-end mt-4">
+                            <button type="submit" class="btn btn-emerald px-5">Lưu Liên Kết</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Bảng tổng hợp -->
+                <div class="card-custom">
+                    <h5 class="fw-bold mb-3">Bản đồ Dữ liệu Đã Liên kết</h5>
+                    <div class="table-responsive">
+                        <table class="table table-custom m-0">
+                            <thead class="text-white" style="background:#1e3a8a;">
+                                <tr><th>Bệnh</th><th>Triệu chứng</th><th>Thuốc gợi ý</th></tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td><strong>@item.TenBenh</strong></td>
+                                        <td>
+                                            @if (item.TrieuChungs != null && item.TrieuChungs.Any())
+                                            {
+                                                foreach (var tc in item.TrieuChungs)
+                                                {
+                                                    <span class="badge bg-warning text-dark me-1">@tc.TenTrieuChung</span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Chưa có</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (item.Thuocs != null && item.Thuocs.Any())
+                                            {
+                                                foreach (var th in item.Thuocs)
+                                                {
+                                                    <span class="badge bg-success me-1">@th.TenThuoc</span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Chưa có</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-
-                <script>
-                    function switchTab(tabId, btnId) {
-                        document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.add('d-none'));
-                        document.querySelectorAll('.sidebar .nav-link').forEach(btn => btn.classList.remove('active'));
-
-                        document.getElementById(tabId).classList.remove('d-none');
-                        document.getElementById(btnId).classList.add('active');
-
-                        // Sửa lỗi gạch đỏ thuộc tính CSS tracking không hợp lệ
-                        var titleText = document.getElementById(btnId).innerText.trim();
-                        document.getElementById('txt-current-title').innerText = titleText;
-                    }
-
-                    document.addEventListener("DOMContentLoaded", function () {
-                        var activeTabFromBackend = "@ViewBag.ActiveTab";
-                        if (activeTabFromBackend === "tab-lienket") {
-                            switchTab('tab-lienket', 'btn-lienket');
-                        } else if (activeTabFromBackend === "tab-thuoc") {
-                            switchTab('tab-thuoc', 'btn-thuoc');
-                        } else if (activeTabFromBackend === "tab-trieuchung") {
-                            switchTab('tab-trieuchung', 'btn-trieuchung');
-                        } else {
-                            switchTab('tab-benh', 'btn-benh');
-                        }
-                    });
-                </script>
-                </div>
-
             </div>
+
         </div>
     </div>
 
@@ -579,28 +670,31 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Hàm chuyển đổi tab cũ của bạn (giữ nguyên hoặc tinh chỉnh cho mượt)
         function switchTab(tabId, btnId) {
-            // Ẩn tất cả các tab
             document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.add('d-none'));
-            // Bỏ active tất cả các nút
             document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active'));
 
-            // Hiển thị tab được chọn
             document.getElementById(tabId).classList.remove('d-none');
-            // Active nút tương ứng
             document.getElementById(btnId).classList.add('active');
+
+            var titleMap = {
+                'btn-benh': 'Quản lý Bệnh Lý',
+                'btn-thuoc': 'Quản lý Thuốc',
+                'btn-trieuchung': 'Quản lý Triệu Chứng',
+                'btn-lienket': 'Liên Kết Dữ Liệu'
+            };
+            document.getElementById('txt-current-title').innerText = titleMap[btnId] || 'Quản trị';
         }
 
-        // TỰ ĐỘNG GIỮ LẠI TAB LIÊN KẾT KHI HỆ THỐNG REFRESH
         document.addEventListener("DOMContentLoaded", function () {
-            // Đọc giá trị activeTab được Controller ép về qua ViewBag
             var activeTabFromBackend = "@ViewBag.ActiveTab";
-
             if (activeTabFromBackend === "tab-lienket") {
                 switchTab('tab-lienket', 'btn-lienket');
+            } else if (activeTabFromBackend === "tab-thuoc") {
+                switchTab('tab-thuoc', 'btn-thuoc');
+            } else if (activeTabFromBackend === "tab-trieuchung") {
+                switchTab('tab-trieuchung', 'btn-trieuchung');
             } else {
-                // Mặc định ban đầu nếu không có lệnh ép thì mở tab bệnh
                 switchTab('tab-benh', 'btn-benh');
             }
         });

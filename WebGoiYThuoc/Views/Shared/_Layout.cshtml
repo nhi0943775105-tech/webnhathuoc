@@ -3,50 +3,227 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WebGoiYThuoc</title>
+    <title>@ViewData["Title"] - MedSuggest</title>
+
+    <!-- Font & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <!-- Bootstrap + Custom -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebGoiYThuoc.styles.css" asp-append-version="true" />
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --bg-light: #f8fafc;
+            --border: #e2e8f0;
+            --font: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            font-family: var(--font);
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ========== NAVBAR ========== */
+        .main-navbar {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+            padding: 0.5rem 0;
+            transition: box-shadow 0.2s;
+        }
+
+        .navbar-brand-custom {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary) !important;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            letter-spacing: -0.3px;
+        }
+
+            .navbar-brand-custom:hover {
+                color: var(--primary-dark) !important;
+            }
+
+        .nav-link-custom {
+            font-weight: 500;
+            color: var(--text-muted) !important;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px;
+            transition: background 0.15s, color 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+            .nav-link-custom:hover {
+                background: #f1f5f9;
+                color: var(--primary) !important;
+            }
+
+        .nav-link-admin {
+            color: #b91c1c !important;
+            font-weight: 600;
+        }
+
+            .nav-link-admin:hover {
+                background: #fee2e2;
+                color: #b91c1c !important;
+            }
+
+        .btn-logout {
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            background: transparent;
+            font-weight: 500;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+            .btn-logout:hover {
+                background: #fee2e2;
+                color: #991b1b;
+                border-color: #fca5a5;
+            }
+
+        .greeting-text {
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+            .greeting-text b {
+                color: #0f172a;
+            }
+
+        /* ========== MAIN CONTENT WRAPPER ========== */
+        .content-wrapper {
+            min-height: calc(100vh - 140px);
+            padding-top: 16px;
+            padding-bottom: 40px;
+        }
+
+        /* ========== FOOTER ========== */
+        .main-footer {
+            background: white;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.02);
+        }
+
+            .main-footer .container {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+        .footer-brand {
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .footer-links a {
+            color: #64748b;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+            .footer-links a:hover {
+                color: var(--primary);
+            }
+
+        @@media (max-width: 576px) {
+            .main-footer .container {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .footer-links {
+                margin-top: 6px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand fw-bold text-primary" asp-area="" asp-controller="Home" asp-action="Index">💊 MegSuggest</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-sm main-navbar">
+            <div class="container">
+                <a class="navbar-brand-custom" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="material-symbols-outlined" style="font-size:26px; color:#2563eb;">medical_services</span>
+                    MedSuggest
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <!-- Menu chính (để trống hoặc thêm sau) -->
+                    <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+                        <!-- Có thể thêm các mục điều hướng chính ở đây -->
                     </ul>
 
-                    <ul class="navbar-nav ms-auto">
+                    <!-- Right side: User actions -->
+                    <ul class="navbar-nav ms-auto align-items-center">
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item d-flex align-items-center me-3">
-                                <span class="text-secondary">Xin chào, <b class="text-dark">@User.Identity.Name</b></span>
+                                <span class="greeting-text">
+                                    <span class="material-symbols-outlined" style="font-size:18px; vertical-align:middle; color:#64748b;">person</span>
+                                    Xin chào, <b>@User.Identity.Name</b>
+                                </span>
                             </li>
 
                             @if (User.IsInRole("Admin"))
                             {
-                                <li class="nav-item">
-                                    <a class="nav-link text-danger fw-bold me-2" asp-area="Admin" asp-controller="Admin" asp-action="Index">⚙️ Trang Quản Trị Admin</a>
+                                <li class="nav-item me-2">
+                                    <a class="nav-link-custom nav-link-admin" asp-area="Admin" asp-controller="Admin" asp-action="Index">
+                                        <span class="material-symbols-outlined" style="font-size:18px;">admin_panel_settings</span>
+                                        Quản trị
+                                    </a>
                                 </li>
                             }
 
                             <li class="nav-item">
-                                <a class="btn btn-sm btn-outline-danger" asp-area="" asp-controller="Account" asp-action="Logout">Đăng xuất</a>
+                                <a class="btn btn-logout" asp-area="" asp-controller="Account" asp-action="Logout">
+                                    <span class="material-symbols-outlined" style="font-size:16px; vertical-align:middle;">logout</span> Đăng xuất
+                                </a>
                             </li>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-primary fw-bold" asp-area="" asp-controller="Account" asp-action="Login">Đăng Nhập</a>
+                            <li class="nav-item me-2">
+                                <a class="nav-link-custom" asp-area="" asp-controller="Account" asp-action="Login">
+                                    <span class="material-symbols-outlined" style="font-size:18px;">login</span> Đăng nhập
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-success fw-bold" asp-area="" asp-controller="Account" asp-action="Register">Đăng Ký</a>
+                                <a class="nav-link-custom" style="color: var(--secondary) !important; font-weight:600;" asp-area="" asp-controller="Account" asp-action="Register">
+                                    <span class="material-symbols-outlined" style="font-size:18px;">how_to_reg</span> Đăng ký
+                                </a>
                             </li>
                         }
                     </ul>
@@ -54,17 +231,29 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div class="container content-wrapper">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted mt-5">
-        <div class="container text-center py-3">
-            &copy; 2026 - WebGoiYThuoc -
+    <footer class="main-footer">
+        <div class="container">
+            <div>
+                <a class="footer-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span class="material-symbols-outlined" style="font-size:18px; vertical-align:middle;">medical_services</span> MedSuggest
+                </a>
+                <span style="margin-left: 8px;">&copy; 2026</span>
+            </div>
+            <div class="footer-links">
+                <a href="#">Điều khoản</a>
+                <a href="#">Bảo mật</a>
+                <a href="#">Liên hệ</a>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
