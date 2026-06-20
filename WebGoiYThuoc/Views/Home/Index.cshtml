@@ -103,7 +103,7 @@
         max-width: 640px;
         margin: 0 auto 28px;
         transition: box-shadow 0.2s;
-        flex-wrap: wrap; /* cho responsive */
+        flex-wrap: wrap;
     }
 
         .search-container:focus-within {
@@ -547,6 +547,22 @@
         font-style: italic;
     }
 
+    /* Nút dùng trong modal cảnh báo */
+    .btn-emerald {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border: none;
+        color: white;
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+    }
+
+        .btn-emerald:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+
     /* Responsive */
     @@media (max-width: 992px) {
         .main-grid {
@@ -723,6 +739,26 @@
     </div>
 </div>
 
+<!-- ========== MODAL CẢNH BÁO CHƯA NHẬP TRIỆU CHỨNG ========== -->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header border-0" style="background: #fef3c7; border-radius: 16px 16px 0 0;">
+                <h5 class="modal-title fw-bold" style="color: #92400e;">
+                    <span class="material-symbols-outlined" style="vertical-align: middle;">warning</span> Chưa nhập triệu chứng
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="mb-0">Vui lòng nhập ít nhất một triệu chứng để AI có thể tư vấn cho bạn.</p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button type="button" class="btn btn-emerald" data-bs-dismiss="modal">Đã hiểu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- SCRIPTS -->
 <script>
     // =========================================================================
@@ -764,12 +800,14 @@
     }
 
     // =========================================================================
-    // 2. KÍCH HOẠT AI KHI BẤM NÚT
+    // 2. KÍCH HOẠT AI KHI BẤM NÚT (ĐÃ THAY BẰNG MODAL)
     // =========================================================================
     function askAI() {
         const inputVal = document.getElementById('figmaMainInput').value.trim();
         if (!inputVal) {
-            alert('Vui lòng nhập triệu chứng trước khi hỏi AI.');
+            // Hiển thị modal cảnh báo thay vì alert
+            const alertModal = new bootstrap.Modal(document.getElementById('alertModal'));
+            alertModal.show();
             return;
         }
         fetchAIAdvice(inputVal);
