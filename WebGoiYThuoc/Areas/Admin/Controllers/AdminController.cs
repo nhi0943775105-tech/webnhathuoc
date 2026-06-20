@@ -20,26 +20,21 @@ namespace WebGoiYThuoc.Areas.Admin.Controllers
             _context = context;
         }
 
-        // TRANG DASHBOARD CHÍNH (Đã nâng cấp nạp dữ liệu liên kết và giữ Tab)
+        // TRANG DASHBOARD CHÍNH
         public async Task<IActionResult> Index(string activeTab = "tab-benh")
         {
-            // Tải danh sách bệnh kèm theo Triệu chứng và Thuốc đã gán để phục vụ bảng thống kê dữ liệu liên kết
             var danhhSachBenh = await _context.Benhs
                 .Include(b => b.TrieuChungs)
                 .Include(b => b.Thuocs)
                 .ToListAsync();
 
-            // NẠP DỮ LIỆU SANG VIEW CHO CỘT 2 VÀ CỘT 3 HẾT BỊ LỖI TRỐNG
             ViewBag.TrieuChungs = await _context.TrieuChungs.ToListAsync();
             ViewBag.Thuocs = await _context.Thuocs.ToListAsync();
-
-            // Gửi tên Tab hiện tại sang View để giao diện tự động bật sáng Tab đó lên
             ViewBag.ActiveTab = activeTab;
 
             return View(danhhSachBenh);
         }
 
-        // XỬ LÝ THÊM BỆNH
         [HttpPost]
         public async Task<IActionResult> AddBenh(Benh model)
         {
@@ -48,11 +43,9 @@ namespace WebGoiYThuoc.Areas.Admin.Controllers
                 _context.Benhs.Add(model);
                 await _context.SaveChangesAsync();
             }
-            // Giữ Admin ở lại Tab bệnh lý
             return RedirectToAction(nameof(Index), new { activeTab = "tab-benh" });
         }
 
-        // XỬ LÝ THÊM THUỐC
         [HttpPost]
         public async Task<IActionResult> AddThuoc(Thuoc model)
         {
@@ -61,11 +54,9 @@ namespace WebGoiYThuoc.Areas.Admin.Controllers
                 _context.Thuocs.Add(model);
                 await _context.SaveChangesAsync();
             }
-            // Giữ Admin ở lại Tab thuốc
             return RedirectToAction(nameof(Index), new { activeTab = "tab-thuoc" });
         }
 
-        // XỬ LÝ THÊM TRIỆU CHỨNG
         [HttpPost]
         public async Task<IActionResult> AddTrieuChung(TrieuChung model)
         {
@@ -74,15 +65,12 @@ namespace WebGoiYThuoc.Areas.Admin.Controllers
                 _context.TrieuChungs.Add(model);
                 await _context.SaveChangesAsync();
             }
-            // Giữ Admin ở lại Tab triệu chứng
             return RedirectToAction(nameof(Index), new { activeTab = "tab-trieuchung" });
         }
 
-        // XỬ LÝ GÁN GHÉP TRIỆU CHỨNG VÀ THUỐC CHO BỆNH (Đã sửa luồng giữ Tab liên kết)
         [HttpPost]
         public async Task<IActionResult> LinkBenhDetail(int benhId, List<int> selectedTrieuChungs, List<int> selectedThuocs)
         {
-            // 1. Tìm bệnh cần cấu hình (bao gồm cả danh sách liên kết hiện tại của nó)
             var benh = await _context.Benhs
                 .Include(b => b.TrieuChungs)
                 .Include(b => b.Thuocs)
@@ -90,30 +78,95 @@ namespace WebGoiYThuoc.Areas.Admin.Controllers
 
             if (benh != null)
             {
-                // 2. Cập nhật mối quan hệ Nhiều - Nhiều với Triệu Chứng
-                benh.TrieuChungs.Clear(); // Xóa liên kết cũ để nạp lại từ đầu
+                benh.TrieuChungs.Clear();
                 if (selectedTrieuChungs != null)
                 {
-                    var trieuChungs = await _context.TrieuChungs
-                        .Where(t => selectedTrieuChungs.Contains(t.Id)).ToListAsync();
+                    var trieuChungs = await _context.TrieuChungs.Where(t => selectedTrieuChungs.Contains(t.Id)).ToListAsync();
                     benh.TrieuChungs.AddRange(trieuChungs);
                 }
 
-                // 3. Cập nhật mối quan hệ Nhiều - Nhiều với Thuốc Gợi Ý
-                benh.Thuocs.Clear(); // Xóa liên kết cũ
+                benh.Thuocs.Clear();
                 if (selectedThuocs != null)
                 {
-                    var thuocs = await _context.Thuocs
-                        .Where(t => selectedThuocs.Contains(t.Id)).ToListAsync();
+                    var thuocs = await _context.Thuocs.Where(t => selectedThuocs.Contains(t.Id)).ToListAsync();
                     benh.Thuocs.AddRange(thuocs);
                 }
 
-                // 4. Lưu thay đổi xuống SQL Server
                 await _context.SaveChangesAsync();
             }
 
-            // ĐẶC BIỆT: Sau khi lưu xong, ép hệ thống ở lại đúng Tab cấu hình liên kết
             return RedirectToAction(nameof(Index), new { activeTab = "tab-lienket" });
+        }
+
+        // ========== SỬA / XÓA BỆNH ==========
+        [HttpGet]
+        public async Task<IActionResult> GetBenh(int id)
+        {
+            var benh = await _context.Benhs.FindAsync(id);
+            if (benh == null) return NotFound();
+            return Json(new { tenBenh = benh.TenBenh, moTaBenh = benh.MoTaBenh, loiKhuyen = benh.LoiKhuyen });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateBenh(int id, string TenBenh, string MoTaBenh, string LoiKhuyen)
+        {
+            var benh = await _context.Benhs.FindAsync(id);
+            if (benh == null) return NotFound();
+
+            if (string.IsNullOrWhiteSpace(TenBenh))
+                return BadRequest("Tên bệnh không được để trống.");
+
+            benh.TenBenh = TenBenh;
+            benh.MoTaBenh = MoTaBenh ?? "";
+            benh.LoiKhuyen = LoiKhuyen ?? "";
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteBenh(int id)
+        {
+            var benh = await _context.Benhs.FindAsync(id);
+            if (benh == null) return NotFound();
+
+            _context.Benhs.Remove(benh);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        // ========== SỬA / XÓA TRIỆU CHỨNG ==========
+        [HttpGet]
+        public async Task<IActionResult> GetTrieuChung(int id)
+        {
+            var tc = await _context.TrieuChungs.FindAsync(id);
+            if (tc == null) return NotFound();
+            return Json(new { tenTrieuChung = tc.TenTrieuChung, moTa = tc.MoTa });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateTrieuChung(int id, string TenTrieuChung, string MoTa)
+        {
+            var tc = await _context.TrieuChungs.FindAsync(id);
+            if (tc == null) return NotFound();
+
+            if (string.IsNullOrWhiteSpace(TenTrieuChung))
+                return BadRequest("Tên triệu chứng không được để trống.");
+
+            tc.TenTrieuChung = TenTrieuChung;
+            tc.MoTa = MoTa ?? "";
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteTrieuChung(int id)
+        {
+            var tc = await _context.TrieuChungs.FindAsync(id);
+            if (tc == null) return NotFound();
+
+            _context.TrieuChungs.Remove(tc);
+            await _context.SaveChangesAsync();
+            return Ok();
         }
     }
 }
